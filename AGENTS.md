@@ -10,6 +10,16 @@ This repository is a collection of small, self-contained web apps deployed as Gi
 - **Root index.html** is the landing page listing all apps. When adding a new app, add a link to it here.
 - **Keep it simple.** Each app should be small and focused. Prefer inline `<style>` and `<script>` tags for small apps; split into separate `.css`/`.js` files only when the app grows large enough to warrant it.
 
+## App UI conventions
+
+Every app must include:
+
+- **Language toggle (EN/CZ).** All apps are bilingual — English and Czech. English is always the default language. Include a toggle button (typically in the header) to switch between EN and CZ.
+- **Back to Playground link.** Every app header must have a visible link back to the root Playground homepage (e.g. `← Playground` pointing to `../`).
+- **Restart / reset button.** Every app header must include a button to restart the app from the beginning without reloading the page.
+
+The root `index.html` landing page also has an EN/CZ language toggle.
+
 ## Local testing
 
 Before pushing, serve the repo locally and verify the app works in a browser. Any simple static file server will do:

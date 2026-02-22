@@ -257,6 +257,26 @@
             text-decoration: underline;
         }
 
+        /* Language toggle */
+        .lang-toggle {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 10;
+            background: rgba(0, 87, 184, 0.12);
+            color: #0057B8;
+            border: 1px solid rgba(0, 87, 184, 0.3);
+            padding: 0.35rem 0.8rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        .lang-toggle:hover {
+            background: rgba(0, 87, 184, 0.22);
+        }
+
         /* Accessibility: respect reduced motion */
         @media (prefers-reduced-motion: reduce) {
             .rect, .plane { animation: none !important; }
@@ -308,18 +328,17 @@
         </svg>
     </div>
 
+    <button class="lang-toggle" id="lang-toggle">CZ</button>
+
     <!-- Main content -->
     <main class="content">
         <h1>Playground</h1>
-        <p class="subtitle">A collection of small web apps.</p>
+        <p class="subtitle" id="subtitle">A collection of small web apps.</p>
         <p class="author">Author: Viktor Bruncl&iacute;k with Claude Code</p>
 
-        <!-- Add links to web apps here as they are created -->
-        <!--
-        <ul class="app-list">
-            <li><a href="example-app/">Example App</a></li>
+        <ul class="app-list" id="app-list">
+            <li><a href="political-calculator/" data-en="Political Calculator" data-cz="Politick&aacute; kalkula&ccaron;ka">Political Calculator</a></li>
         </ul>
-        -->
     </main>
 
     <script>
@@ -378,6 +397,28 @@
         }
 
         requestAnimationFrame(check);
+    })();
+
+    // Language toggle
+    (function () {
+        var lang = 'en';
+        var btn = document.getElementById('lang-toggle');
+        var subtitle = document.getElementById('subtitle');
+        var links = document.querySelectorAll('#app-list a');
+
+        var texts = {
+            subtitle: { en: 'A collection of small web apps.', cz: 'Sb\u00edrka mal\u00fdch webov\u00fdch aplikac\u00ed.' },
+            btn: { en: 'CZ', cz: 'EN' }
+        };
+
+        btn.addEventListener('click', function () {
+            lang = lang === 'en' ? 'cz' : 'en';
+            btn.textContent = texts.btn[lang];
+            subtitle.textContent = texts[lang === 'en' ? 'subtitle' : 'subtitle'][lang === 'en' ? 'en' : 'cz'];
+            for (var i = 0; i < links.length; i++) {
+                links[i].textContent = links[i].getAttribute('data-' + lang);
+            }
+        });
     })();
     </script>
 </body>
