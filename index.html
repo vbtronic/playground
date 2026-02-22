@@ -8,42 +8,377 @@
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            font-family: system-ui, -apple-system, sans-serif;
+            font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
             min-height: 100dvh;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            background: #f8f9fa;
-            color: #212529;
+            background: #F0F4F8;
+            color: #1A3A5C;
         }
 
-        h1 { font-size: 2rem; margin-bottom: 0.5rem; }
-        p  { color: #6c757d; }
+        /* Background animation layer */
+        .bg-layer {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
 
-        ul {
+        /* Floating rectangles */
+        .rect {
+            position: absolute;
+            border-radius: 4px;
+        }
+
+        .rect-1 {
+            width: 160px; height: 100px;
+            top: 8%; left: 5%;
+            background: rgba(0, 87, 184, 0.07);
+            border: 1px solid rgba(0, 87, 184, 0.15);
+            animation: float-1 20s ease-in-out infinite;
+        }
+        .rect-2 {
+            width: 120px; height: 80px;
+            top: 65%; left: 78%;
+            background: rgba(255, 215, 0, 0.08);
+            border: 1px solid rgba(255, 215, 0, 0.22);
+            animation: float-2 25s ease-in-out infinite;
+            animation-delay: -5s;
+        }
+        .rect-3 {
+            width: 100px; height: 140px;
+            top: 35%; left: 85%;
+            background: rgba(0, 87, 184, 0.06);
+            border: 1px solid rgba(0, 87, 184, 0.12);
+            animation: float-3 22s ease-in-out infinite;
+            animation-delay: -8s;
+        }
+        .rect-4 {
+            width: 180px; height: 60px;
+            top: 12%; left: 70%;
+            background: rgba(255, 215, 0, 0.07);
+            border: 1px solid rgba(255, 215, 0, 0.18);
+            animation: float-4 28s ease-in-out infinite;
+            animation-delay: -3s;
+        }
+        .rect-5 {
+            width: 90px; height: 90px;
+            top: 75%; left: 12%;
+            background: rgba(0, 87, 184, 0.08);
+            border: 1px solid rgba(0, 87, 184, 0.16);
+            animation: float-5 18s ease-in-out infinite;
+            animation-delay: -10s;
+        }
+        .rect-6 {
+            width: 140px; height: 110px;
+            top: 45%; left: 3%;
+            background: rgba(255, 215, 0, 0.06);
+            border: 1px solid rgba(255, 215, 0, 0.15);
+            animation: float-6 24s ease-in-out infinite;
+            animation-delay: -14s;
+        }
+        .rect-7 {
+            width: 70px; height: 120px;
+            top: 5%; left: 42%;
+            background: rgba(0, 87, 184, 0.05);
+            border: 1px solid rgba(0, 87, 184, 0.10);
+            animation: float-7 30s ease-in-out infinite;
+            animation-delay: -18s;
+        }
+
+        /* Rectangle float animations */
+        @keyframes float-1 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            25%      { transform: translate(30px, -20px) rotate(2deg); }
+            50%      { transform: translate(-10px, 15px) rotate(-1deg); }
+            75%      { transform: translate(20px, 10px) rotate(1.5deg); }
+        }
+        @keyframes float-2 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33%      { transform: translate(-25px, 20px) rotate(-2deg); }
+            66%      { transform: translate(15px, -15px) rotate(1deg); }
+        }
+        @keyframes float-3 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            25%      { transform: translate(-20px, -15px) rotate(1.5deg); }
+            50%      { transform: translate(10px, 25px) rotate(-2deg); }
+            75%      { transform: translate(-15px, 10px) rotate(0.5deg); }
+        }
+        @keyframes float-4 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            50%      { transform: translate(-30px, 15px) rotate(-1.5deg); }
+        }
+        @keyframes float-5 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            25%      { transform: translate(15px, -25px) rotate(-1deg); }
+            50%      { transform: translate(-20px, -10px) rotate(2deg); }
+            75%      { transform: translate(10px, 20px) rotate(-0.5deg); }
+        }
+        @keyframes float-6 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33%      { transform: translate(20px, -15px) rotate(1deg); }
+            66%      { transform: translate(-10px, 20px) rotate(-1.5deg); }
+        }
+        @keyframes float-7 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            50%      { transform: translate(25px, 20px) rotate(2deg); }
+        }
+
+        /* Airplane SVGs */
+        .plane {
+            position: absolute;
+        }
+
+        .plane-1 {
+            width: 40px; height: 40px;
+            top: 15%;
+            animation: fly-ltr-1 18s linear infinite;
+        }
+        .plane-2 {
+            width: 35px; height: 35px;
+            top: 75%;
+            animation: fly-ltr-2 22s linear infinite;
+            animation-delay: -8s;
+        }
+        .plane-3 {
+            width: 50px; height: 50px;
+            top: 40%;
+            transform: scaleX(-1);
+            animation: fly-rtl-1 15s linear infinite;
+            animation-delay: -4s;
+        }
+        .plane-4 {
+            width: 30px; height: 30px;
+            top: 10%;
+            animation: fly-ltr-3 25s linear infinite;
+            animation-delay: -12s;
+        }
+        .plane-5 {
+            width: 45px; height: 45px;
+            top: 85%;
+            transform: scaleX(-1);
+            animation: fly-rtl-2 20s linear infinite;
+            animation-delay: -6s;
+        }
+
+        /* Airplane fly animations (left-to-right) - wavy paths */
+        @keyframes fly-ltr-1 {
+            0%   { transform: translate(-60px, 0); opacity: 0; }
+            5%   { opacity: 1; }
+            25%  { transform: translate(25vw, 30vh); }
+            50%  { transform: translate(50vw, -15vh); }
+            75%  { transform: translate(75vw, 20vh); }
+            95%  { opacity: 1; }
+            100% { transform: translate(calc(100vw + 60px), -10vh); opacity: 0; }
+        }
+        @keyframes fly-ltr-2 {
+            0%   { transform: translate(-60px, 0); opacity: 0; }
+            5%   { opacity: 1; }
+            25%  { transform: translate(25vw, -35vh); }
+            50%  { transform: translate(50vw, -10vh); }
+            75%  { transform: translate(75vw, -40vh); }
+            95%  { opacity: 1; }
+            100% { transform: translate(calc(100vw + 60px), -20vh); opacity: 0; }
+        }
+        @keyframes fly-ltr-3 {
+            0%   { transform: translate(-60px, 0); opacity: 0; }
+            5%   { opacity: 1; }
+            25%  { transform: translate(25vw, 20vh); }
+            50%  { transform: translate(50vw, 35vh); }
+            75%  { transform: translate(75vw, -10vh); }
+            95%  { opacity: 1; }
+            100% { transform: translate(calc(100vw + 60px), 25vh); opacity: 0; }
+        }
+
+        /* Airplane fly animations (right-to-left) - wavy paths */
+        @keyframes fly-rtl-1 {
+            0%   { transform: scaleX(-1) translate(-60px, 0); opacity: 0; }
+            5%   { opacity: 1; }
+            25%  { transform: scaleX(-1) translate(25vw, -25vh); }
+            50%  { transform: scaleX(-1) translate(50vw, 20vh); }
+            75%  { transform: scaleX(-1) translate(75vw, -15vh); }
+            95%  { opacity: 1; }
+            100% { transform: scaleX(-1) translate(calc(100vw + 60px), 10vh); opacity: 0; }
+        }
+        @keyframes fly-rtl-2 {
+            0%   { transform: scaleX(-1) translate(-60px, 0); opacity: 0; }
+            5%   { opacity: 1; }
+            25%  { transform: scaleX(-1) translate(25vw, -40vh); }
+            50%  { transform: scaleX(-1) translate(50vw, -15vh); }
+            75%  { transform: scaleX(-1) translate(75vw, -35vh); }
+            95%  { opacity: 1; }
+            100% { transform: scaleX(-1) translate(calc(100vw + 60px), -25vh); opacity: 0; }
+        }
+
+        /* Main content */
+        .content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 800;
+            color: #0057B8;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.75rem;
+        }
+
+        .subtitle {
+            font-size: clamp(1rem, 2.5vw, 1.35rem);
+            color: #4A6FA5;
+            margin-bottom: 0.5rem;
+        }
+
+        .author {
+            font-size: clamp(0.85rem, 2vw, 1rem);
+            color: #8B9DC3;
+        }
+
+        /* Future app list styles */
+        .app-list {
             list-style: none;
             margin-top: 2rem;
-            text-align: center;
+            padding: 0;
         }
-
-        ul li a {
-            color: #0d6efd;
+        .app-list li { margin: 0.5rem 0; }
+        .app-list a {
+            color: #0057B8;
             text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .app-list a:hover {
+            color: #FFD700;
+            text-decoration: underline;
         }
 
-        ul li a:hover { text-decoration: underline; }
+        /* Accessibility: respect reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+            .rect, .plane { animation: none !important; }
+        }
+
+        /* Mobile: fewer animated elements */
+        @media (max-width: 480px) {
+            .plane-4, .plane-5, .rect-6, .rect-7 { display: none; }
+        }
     </style>
 </head>
 <body>
-    <h1>Playground</h1>
-    <p>A collection of small web apps.</p>
 
-    <!-- Add links to web apps here as they are created -->
-    <!--
-    <ul>
-        <li><a href="example-app/">Example App</a></li>
-    </ul>
-    -->
+    <!-- Animated background -->
+    <div class="bg-layer">
+        <!-- Floating rectangles -->
+        <div class="rect rect-1"></div>
+        <div class="rect rect-2"></div>
+        <div class="rect rect-3"></div>
+        <div class="rect rect-4"></div>
+        <div class="rect rect-5"></div>
+        <div class="rect rect-6"></div>
+        <div class="rect rect-7"></div>
+
+        <!-- Airplanes (paper-airplane style, line art) -->
+        <svg class="plane plane-1" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M32 18 L4 6 L14 18 L4 30 Z" stroke="rgba(0,87,184,0.3)" stroke-width="1.2" stroke-linejoin="round"/>
+            <line x1="14" y1="18" x2="4" y2="18" stroke="rgba(0,87,184,0.3)" stroke-width="1.2"/>
+        </svg>
+
+        <svg class="plane plane-2" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M32 18 L4 6 L14 18 L4 30 Z" stroke="rgba(255,215,0,0.4)" stroke-width="1.2" stroke-linejoin="round"/>
+            <line x1="14" y1="18" x2="4" y2="18" stroke="rgba(255,215,0,0.4)" stroke-width="1.2"/>
+        </svg>
+
+        <svg class="plane plane-3" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M32 18 L4 6 L14 18 L4 30 Z" stroke="rgba(0,87,184,0.25)" stroke-width="1.2" stroke-linejoin="round"/>
+            <line x1="14" y1="18" x2="4" y2="18" stroke="rgba(0,87,184,0.25)" stroke-width="1.2"/>
+        </svg>
+
+        <svg class="plane plane-4" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M32 18 L4 6 L14 18 L4 30 Z" stroke="rgba(255,215,0,0.35)" stroke-width="1.2" stroke-linejoin="round"/>
+            <line x1="14" y1="18" x2="4" y2="18" stroke="rgba(255,215,0,0.35)" stroke-width="1.2"/>
+        </svg>
+
+        <svg class="plane plane-5" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M32 18 L4 6 L14 18 L4 30 Z" stroke="rgba(0,87,184,0.3)" stroke-width="1.2" stroke-linejoin="round"/>
+            <line x1="14" y1="18" x2="4" y2="18" stroke="rgba(0,87,184,0.3)" stroke-width="1.2"/>
+        </svg>
+    </div>
+
+    <!-- Main content -->
+    <main class="content">
+        <h1>Playground</h1>
+        <p class="subtitle">A collection of small web apps.</p>
+        <p class="author">Author: Viktor Bruncl&iacute;k with Claude Code</p>
+
+        <!-- Add links to web apps here as they are created -->
+        <!--
+        <ul class="app-list">
+            <li><a href="example-app/">Example App</a></li>
+        </ul>
+        -->
+    </main>
+
+    <script>
+    (function () {
+        var planes = document.querySelectorAll('.plane');
+        var cooldowns = {};
+
+        function center(el) {
+            var r = el.getBoundingClientRect();
+            return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+        }
+
+        function check() {
+            for (var i = 0; i < planes.length; i++) {
+                for (var j = i + 1; j < planes.length; j++) {
+                    var key = i + '-' + j;
+                    if (cooldowns[key]) continue;
+
+                    var a = center(planes[i]);
+                    var b = center(planes[j]);
+                    var dist = Math.hypot(a.x - b.x, a.y - b.y);
+
+                    if (dist < 70) {
+                        cooldowns[key] = true;
+                        scatter(planes[i], planes[j], a, b);
+                        setTimeout(function (k) {
+                            return function () { delete cooldowns[k]; };
+                        }(key), 3000);
+                    }
+                }
+            }
+            requestAnimationFrame(check);
+        }
+
+        function scatter(planeA, planeB, ca, cb) {
+            // Decide who goes up, who goes down
+            var goUp = ca.y <= cb.y;
+            var pushY = 250 + Math.random() * 150;
+            var pushX = 40 + Math.random() * 60;
+
+            boom(planeA, goUp ? -pushX : pushX, goUp ? -pushY : pushY);
+            boom(planeB, goUp ? pushX : -pushX, goUp ? pushY : -pushY);
+        }
+
+        function boom(el, tx, ty) {
+            var spin = (Math.random() - 0.5) * 1080;
+            el.animate([
+                { transform: 'translate(0,0) rotate(0deg)', offset: 0 },
+                { transform: 'translate(' + tx + 'px,' + ty + 'px) rotate(' + spin + 'deg)', offset: 0.3 },
+                { transform: 'translate(0,0) rotate(0deg)', offset: 1 }
+            ], {
+                duration: 1200,
+                easing: 'ease-out',
+                composite: 'add'
+            });
+        }
+
+        requestAnimationFrame(check);
+    })();
+    </script>
 </body>
 </html>
