@@ -10,11 +10,61 @@
     };
 
     var app = document.getElementById('app');
-    var langBtn = document.getElementById('lang-btn');
     var headerTitle = document.getElementById('header-title');
     var resetBtn = document.getElementById('btn-reset');
+    var themeToggle = document.getElementById('theme-toggle');
+    var iconMoon = themeToggle.querySelector('.icon-moon');
+    var iconSun = themeToggle.querySelector('.icon-sun');
 
-    // Clicking reset restarts the calculator
+    // ===== Theme toggle =====
+    var currentTheme = localStorage.getItem('theme') || 'light';
+    applyTheme(currentTheme);
+
+    function applyTheme(theme) {
+        currentTheme = theme;
+        if (theme === 'dark') {
+            document.body.classList.add('dark');
+            iconSun.style.display = 'none';
+            iconMoon.style.display = '';
+        } else {
+            document.body.classList.remove('dark');
+            iconSun.style.display = '';
+            iconMoon.style.display = 'none';
+        }
+        localStorage.setItem('theme', theme);
+    }
+
+    themeToggle.addEventListener('click', function () {
+        applyTheme(currentTheme === 'dark' ? 'light' : 'dark');
+        if (state.screen === 'results') render();
+    });
+
+    // ===== Language pill =====
+    var langPill = document.getElementById('lang-pill');
+    var langOpts = langPill.querySelectorAll('.lang-opt');
+
+    function updateLangPill() {
+        for (var i = 0; i < langOpts.length; i++) {
+            if (langOpts[i].getAttribute('data-lang') === state.lang) {
+                langOpts[i].classList.add('active');
+            } else {
+                langOpts[i].classList.remove('active');
+            }
+        }
+    }
+
+    for (var li = 0; li < langOpts.length; li++) {
+        langOpts[li].addEventListener('click', function () {
+            var newLang = this.getAttribute('data-lang');
+            if (newLang === state.lang) return;
+            state.lang = newLang;
+            updateLangPill();
+            headerTitle.textContent = t('title');
+            render();
+        });
+    }
+
+    // ===== Reset =====
     resetBtn.addEventListener('click', function () {
         state.screen = 'welcome';
         state.spectrum = null;
@@ -23,6 +73,7 @@
         render();
     });
 
+    // ===== Translation helpers =====
     function t(key) {
         var obj = DATA.ui[key];
         return obj ? obj[state.lang] : key;
@@ -32,14 +83,7 @@
         return obj[state.lang] || obj.en;
     }
 
-    // Language toggle
-    langBtn.addEventListener('click', function () {
-        state.lang = state.lang === 'en' ? 'cz' : 'en';
-        langBtn.textContent = t('langToggle');
-        headerTitle.textContent = t('title');
-        render();
-    });
-
+    // ===== Render =====
     function render() {
         switch (state.screen) {
             case 'welcome': renderWelcome(); break;
@@ -103,7 +147,7 @@
             '<div class="progress-bar-container">' +
                 '<div class="progress-bar-fill" style="width:' + pct + '%"></div>' +
             '</div>' +
-            '<p class="progress-text">' + t('question') + ' ' + (idx + 1) + ' ' + t('of') + ' ' + total + '</p>' +
+            '<p class="progress-text">' + t('question') + ' ' + (idx + 1) + ' / ' + total + '</p>' +
             '<p class="question-text">' + tObj(q) + '</p>' +
             '<div class="answers">';
 
@@ -123,7 +167,6 @@
 
         app.innerHTML = html;
 
-        // Answer buttons
         var answerBtns = app.querySelectorAll('.answer-btn');
         for (var j = 0; j < answerBtns.length; j++) {
             answerBtns[j].addEventListener('click', function () {
@@ -132,7 +175,6 @@
             });
         }
 
-        // Back button
         var backBtn = document.getElementById('btn-back');
         if (backBtn) {
             backBtn.addEventListener('click', function () {
@@ -141,7 +183,6 @@
             });
         }
 
-        // Skip button
         document.getElementById('btn-skip').addEventListener('click', function () {
             advanceQuestion();
         });
@@ -191,6 +232,28 @@
         return results.slice(0, 3);
     }
 
+    function brightenColor(hex, factor) {
+        var r = parseInt(hex.slice(1, 3), 16);
+        var g = parseInt(hex.slice(3, 5), 16);
+        var b = parseInt(hex.slice(5, 7), 16);
+        var brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        if (brightness > 120) return hex;
+        r = Math.min(255, Math.round(r + (255 - r) * factor));
+        g = Math.min(255, Math.round(g + (255 - g) * factor));
+        b = Math.min(255, Math.round(b + (255 - b) * factor));
+        return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+    }
+
+    function partyColor(hex) {
+        if (currentTheme === 'dark') return brightenColor(hex, 0.45);
+        return hex;
+    }
+
+    function partyBarColor(hex) {
+        if (currentTheme === 'dark') return brightenColor(hex, 0.25);
+        return hex;
+    }
+
     function renderResults() {
         var results = calculateResults();
         var rankLabels = ['#1', '#2', '#3'];
@@ -202,11 +265,11 @@
             var r = results[i];
             html += '<div class="result-card">' +
                 '<div class="result-rank">' + rankLabels[i] + '</div>' +
-                '<div class="result-party-name" style="color:' + r.party.color + '">' + r.party.name + '</div>' +
+                '<div class="result-party-name" style="color:' + partyColor(r.party.color) + '">' + r.party.name + '</div>' +
                 '<div class="result-party-full">' + tObj(r.party.fullName) + '</div>' +
                 '<div class="result-party-leader">' + t('leader') + ': ' + r.party.leader + '</div>' +
                 '<div class="result-bar-container">' +
-                    '<div class="result-bar-fill" style="width:' + r.pct + '%;background:' + r.party.color + '">' +
+                    '<div class="result-bar-fill" style="width:0%;background:' + partyBarColor(r.party.color) + '" data-width="' + r.pct + '">' +
                         '<span class="result-bar-pct">' + r.pct + '% ' + t('match') + '</span>' +
                     '</div>' +
                 '</div>' +
@@ -218,6 +281,14 @@
         '</div>';
 
         app.innerHTML = html;
+
+        // Animate bars after a short delay
+        setTimeout(function () {
+            var bars = app.querySelectorAll('.result-bar-fill');
+            for (var b = 0; b < bars.length; b++) {
+                bars[b].style.width = bars[b].getAttribute('data-width') + '%';
+            }
+        }, 100);
 
         document.getElementById('btn-restart').addEventListener('click', function () {
             state.screen = 'welcome';

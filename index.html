@@ -4,20 +4,87 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Playground</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        /* ===== Theme Variables ===== */
+        :root {
+            --bg: #f4f5f8;
+            --text: #1c2030;
+            --text-2: #4e5668;
+            --text-3: #8892a4;
+            --accent: #4568ee;
+            --accent-h: #3450cc;
+            --accent-dim: rgba(69,104,238,0.07);
+            --accent-glow: rgba(69,104,238,0.2);
+            --accent-fg: #fff;
+            --sf: #fff;
+            --sf2: #f0f1f4;
+            --bd: rgba(0,0,0,0.06);
+            --bd2: rgba(0,0,0,0.1);
+            --sh: 0 1px 2px rgba(0,0,0,0.04);
+            --sh2: 0 4px 14px rgba(0,0,0,0.08);
+            --tog-bg: #cdd1da;
+            --tog-knob: #4568ee;
+            --card-bg: rgba(255,255,255,0.7);
+            --card-bd: rgba(0,0,0,0.05);
+            --card-sh: rgba(0,0,0,0.04);
+            --card-arrow: #4568ee;
+            --rect-a: rgba(69,104,238,0.05);
+            --rect-a-bd: rgba(69,104,238,0.1);
+            --rect-b: rgba(200,170,50,0.05);
+            --rect-b-bd: rgba(200,170,50,0.12);
+            --plane-a: rgba(69,104,238,0.2);
+            --plane-b: rgba(200,170,50,0.25);
+        }
+
+        body.dark {
+            --bg: #0f1115;
+            --text: #c8cdd6;
+            --text-2: #8690a0;
+            --text-3: #505868;
+            --accent: #6e8ef7;
+            --accent-h: #8aa4ff;
+            --accent-dim: rgba(110,142,247,0.1);
+            --accent-glow: rgba(110,142,247,0.25);
+            --accent-fg: #0f1115;
+            --sf: #161920;
+            --sf2: #1a1e26;
+            --bd: rgba(255,255,255,0.06);
+            --bd2: rgba(255,255,255,0.1);
+            --sh: 0 1px 2px rgba(0,0,0,0.2);
+            --sh2: 0 4px 14px rgba(0,0,0,0.3);
+            --tog-bg: #1e222c;
+            --tog-knob: #6e8ef7;
+            --card-bg: rgba(22,25,32,0.7);
+            --card-bd: rgba(255,255,255,0.04);
+            --card-sh: rgba(0,0,0,0.2);
+            --card-arrow: #6e8ef7;
+            --rect-a: rgba(110,142,247,0.03);
+            --rect-a-bd: rgba(110,142,247,0.06);
+            --rect-b: rgba(180,150,40,0.03);
+            --rect-b-bd: rgba(180,150,40,0.06);
+            --plane-a: rgba(110,142,247,0.15);
+            --plane-b: rgba(180,150,40,0.18);
+        }
+
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
             min-height: 100dvh;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #F0F4F8;
-            color: #1A3A5C;
+            background: var(--bg);
+            color: var(--text);
+            transition: background .3s, color .3s;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
-        /* Background animation layer */
+        /* ===== Background ===== */
         .bg-layer {
             position: fixed;
             inset: 0;
@@ -26,265 +93,241 @@
             pointer-events: none;
         }
 
-        /* Floating rectangles */
-        .rect {
-            position: absolute;
-            border-radius: 4px;
+        .rect { position: absolute; border-radius: 4px; }
+
+        .rect-1 { width: 110px; height: 70px; top: 8%; left: 5%; background: var(--rect-a); border: 1px solid var(--rect-a-bd); animation: f1 20s ease-in-out infinite; }
+        .rect-2 { width: 85px; height: 55px; top: 65%; left: 78%; background: var(--rect-b); border: 1px solid var(--rect-b-bd); animation: f2 25s ease-in-out infinite; animation-delay: -5s; }
+        .rect-3 { width: 70px; height: 100px; top: 35%; left: 85%; background: var(--rect-a); border: 1px solid var(--rect-a-bd); animation: f3 22s ease-in-out infinite; animation-delay: -8s; }
+        .rect-4 { width: 130px; height: 42px; top: 12%; left: 70%; background: var(--rect-b); border: 1px solid var(--rect-b-bd); animation: f4 28s ease-in-out infinite; animation-delay: -3s; }
+        .rect-5 { width: 60px; height: 60px; top: 75%; left: 12%; background: var(--rect-a); border: 1px solid var(--rect-a-bd); animation: f5 18s ease-in-out infinite; animation-delay: -10s; }
+        .rect-6 { width: 100px; height: 75px; top: 45%; left: 3%; background: var(--rect-b); border: 1px solid var(--rect-b-bd); animation: f6 24s ease-in-out infinite; animation-delay: -14s; }
+        .rect-7 { width: 50px; height: 85px; top: 5%; left: 42%; background: var(--rect-a); border: 1px solid var(--rect-a-bd); animation: f7 30s ease-in-out infinite; animation-delay: -18s; }
+
+        @keyframes f1 { 0%,100% { transform: translate(0,0) rotate(0deg); } 25% { transform: translate(30px,-20px) rotate(2deg); } 50% { transform: translate(-10px,15px) rotate(-1deg); } 75% { transform: translate(20px,10px) rotate(1.5deg); } }
+        @keyframes f2 { 0%,100% { transform: translate(0,0) rotate(0deg); } 33% { transform: translate(-25px,20px) rotate(-2deg); } 66% { transform: translate(15px,-15px) rotate(1deg); } }
+        @keyframes f3 { 0%,100% { transform: translate(0,0) rotate(0deg); } 25% { transform: translate(-20px,-15px) rotate(1.5deg); } 50% { transform: translate(10px,25px) rotate(-2deg); } 75% { transform: translate(-15px,10px) rotate(0.5deg); } }
+        @keyframes f4 { 0%,100% { transform: translate(0,0) rotate(0deg); } 50% { transform: translate(-30px,15px) rotate(-1.5deg); } }
+        @keyframes f5 { 0%,100% { transform: translate(0,0) rotate(0deg); } 25% { transform: translate(15px,-25px) rotate(-1deg); } 50% { transform: translate(-20px,-10px) rotate(2deg); } 75% { transform: translate(10px,20px) rotate(-0.5deg); } }
+        @keyframes f6 { 0%,100% { transform: translate(0,0) rotate(0deg); } 33% { transform: translate(20px,-15px) rotate(1deg); } 66% { transform: translate(-10px,20px) rotate(-1.5deg); } }
+        @keyframes f7 { 0%,100% { transform: translate(0,0) rotate(0deg); } 50% { transform: translate(25px,20px) rotate(2deg); } }
+
+        .plane { position: absolute; }
+        .plane-1 { width: 28px; height: 28px; top: 15%; animation: fly1 18s linear infinite; }
+        .plane-2 { width: 24px; height: 24px; top: 75%; animation: fly2 22s linear infinite; animation-delay: -8s; }
+        .plane-3 { width: 34px; height: 34px; top: 40%; transform: scaleX(-1); animation: fly3 15s linear infinite; animation-delay: -4s; }
+        .plane-4 { width: 20px; height: 20px; top: 10%; animation: fly4 25s linear infinite; animation-delay: -12s; }
+        .plane-5 { width: 30px; height: 30px; top: 85%; transform: scaleX(-1); animation: fly5 20s linear infinite; animation-delay: -6s; }
+
+        @keyframes fly1 { 0% { transform: translate(-50px,0); opacity:0; } 5% { opacity:1; } 25% { transform: translate(25vw,30vh); } 50% { transform: translate(50vw,-15vh); } 75% { transform: translate(75vw,20vh); } 95% { opacity:1; } 100% { transform: translate(calc(100vw + 50px),-10vh); opacity:0; } }
+        @keyframes fly2 { 0% { transform: translate(-50px,0); opacity:0; } 5% { opacity:1; } 25% { transform: translate(25vw,-35vh); } 50% { transform: translate(50vw,-10vh); } 75% { transform: translate(75vw,-40vh); } 95% { opacity:1; } 100% { transform: translate(calc(100vw + 50px),-20vh); opacity:0; } }
+        @keyframes fly3 { 0% { transform: scaleX(-1) translate(-50px,0); opacity:0; } 5% { opacity:1; } 25% { transform: scaleX(-1) translate(25vw,-25vh); } 50% { transform: scaleX(-1) translate(50vw,20vh); } 75% { transform: scaleX(-1) translate(75vw,-15vh); } 95% { opacity:1; } 100% { transform: scaleX(-1) translate(calc(100vw + 50px),10vh); opacity:0; } }
+        @keyframes fly4 { 0% { transform: translate(-50px,0); opacity:0; } 5% { opacity:1; } 25% { transform: translate(25vw,20vh); } 50% { transform: translate(50vw,35vh); } 75% { transform: translate(75vw,-10vh); } 95% { opacity:1; } 100% { transform: translate(calc(100vw + 50px),25vh); opacity:0; } }
+        @keyframes fly5 { 0% { transform: scaleX(-1) translate(-50px,0); opacity:0; } 5% { opacity:1; } 25% { transform: scaleX(-1) translate(25vw,-40vh); } 50% { transform: scaleX(-1) translate(50vw,-15vh); } 75% { transform: scaleX(-1) translate(75vw,-35vh); } 95% { opacity:1; } 100% { transform: scaleX(-1) translate(calc(100vw + 50px),-25vh); opacity:0; } }
+
+        /* ===== Entrance ===== */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .rect-1 {
-            width: 160px; height: 100px;
-            top: 8%; left: 5%;
-            background: rgba(0, 87, 184, 0.07);
-            border: 1px solid rgba(0, 87, 184, 0.15);
-            animation: float-1 20s ease-in-out infinite;
-        }
-        .rect-2 {
-            width: 120px; height: 80px;
-            top: 65%; left: 78%;
-            background: rgba(255, 215, 0, 0.08);
-            border: 1px solid rgba(255, 215, 0, 0.22);
-            animation: float-2 25s ease-in-out infinite;
-            animation-delay: -5s;
-        }
-        .rect-3 {
-            width: 100px; height: 140px;
-            top: 35%; left: 85%;
-            background: rgba(0, 87, 184, 0.06);
-            border: 1px solid rgba(0, 87, 184, 0.12);
-            animation: float-3 22s ease-in-out infinite;
-            animation-delay: -8s;
-        }
-        .rect-4 {
-            width: 180px; height: 60px;
-            top: 12%; left: 70%;
-            background: rgba(255, 215, 0, 0.07);
-            border: 1px solid rgba(255, 215, 0, 0.18);
-            animation: float-4 28s ease-in-out infinite;
-            animation-delay: -3s;
-        }
-        .rect-5 {
-            width: 90px; height: 90px;
-            top: 75%; left: 12%;
-            background: rgba(0, 87, 184, 0.08);
-            border: 1px solid rgba(0, 87, 184, 0.16);
-            animation: float-5 18s ease-in-out infinite;
-            animation-delay: -10s;
-        }
-        .rect-6 {
-            width: 140px; height: 110px;
-            top: 45%; left: 3%;
-            background: rgba(255, 215, 0, 0.06);
-            border: 1px solid rgba(255, 215, 0, 0.15);
-            animation: float-6 24s ease-in-out infinite;
-            animation-delay: -14s;
-        }
-        .rect-7 {
-            width: 70px; height: 120px;
-            top: 5%; left: 42%;
-            background: rgba(0, 87, 184, 0.05);
-            border: 1px solid rgba(0, 87, 184, 0.10);
-            animation: float-7 30s ease-in-out infinite;
-            animation-delay: -18s;
-        }
-
-        /* Rectangle float animations */
-        @keyframes float-1 {
-            0%, 100% { transform: translate(0, 0) rotate(0deg); }
-            25%      { transform: translate(30px, -20px) rotate(2deg); }
-            50%      { transform: translate(-10px, 15px) rotate(-1deg); }
-            75%      { transform: translate(20px, 10px) rotate(1.5deg); }
-        }
-        @keyframes float-2 {
-            0%, 100% { transform: translate(0, 0) rotate(0deg); }
-            33%      { transform: translate(-25px, 20px) rotate(-2deg); }
-            66%      { transform: translate(15px, -15px) rotate(1deg); }
-        }
-        @keyframes float-3 {
-            0%, 100% { transform: translate(0, 0) rotate(0deg); }
-            25%      { transform: translate(-20px, -15px) rotate(1.5deg); }
-            50%      { transform: translate(10px, 25px) rotate(-2deg); }
-            75%      { transform: translate(-15px, 10px) rotate(0.5deg); }
-        }
-        @keyframes float-4 {
-            0%, 100% { transform: translate(0, 0) rotate(0deg); }
-            50%      { transform: translate(-30px, 15px) rotate(-1.5deg); }
-        }
-        @keyframes float-5 {
-            0%, 100% { transform: translate(0, 0) rotate(0deg); }
-            25%      { transform: translate(15px, -25px) rotate(-1deg); }
-            50%      { transform: translate(-20px, -10px) rotate(2deg); }
-            75%      { transform: translate(10px, 20px) rotate(-0.5deg); }
-        }
-        @keyframes float-6 {
-            0%, 100% { transform: translate(0, 0) rotate(0deg); }
-            33%      { transform: translate(20px, -15px) rotate(1deg); }
-            66%      { transform: translate(-10px, 20px) rotate(-1.5deg); }
-        }
-        @keyframes float-7 {
-            0%, 100% { transform: translate(0, 0) rotate(0deg); }
-            50%      { transform: translate(25px, 20px) rotate(2deg); }
-        }
-
-        /* Airplane SVGs */
-        .plane {
-            position: absolute;
-        }
-
-        .plane-1 {
-            width: 40px; height: 40px;
-            top: 15%;
-            animation: fly-ltr-1 18s linear infinite;
-        }
-        .plane-2 {
-            width: 35px; height: 35px;
-            top: 75%;
-            animation: fly-ltr-2 22s linear infinite;
-            animation-delay: -8s;
-        }
-        .plane-3 {
-            width: 50px; height: 50px;
-            top: 40%;
-            transform: scaleX(-1);
-            animation: fly-rtl-1 15s linear infinite;
-            animation-delay: -4s;
-        }
-        .plane-4 {
-            width: 30px; height: 30px;
-            top: 10%;
-            animation: fly-ltr-3 25s linear infinite;
-            animation-delay: -12s;
-        }
-        .plane-5 {
-            width: 45px; height: 45px;
-            top: 85%;
-            transform: scaleX(-1);
-            animation: fly-rtl-2 20s linear infinite;
-            animation-delay: -6s;
-        }
-
-        /* Airplane fly animations (left-to-right) - wavy paths */
-        @keyframes fly-ltr-1 {
-            0%   { transform: translate(-60px, 0); opacity: 0; }
-            5%   { opacity: 1; }
-            25%  { transform: translate(25vw, 30vh); }
-            50%  { transform: translate(50vw, -15vh); }
-            75%  { transform: translate(75vw, 20vh); }
-            95%  { opacity: 1; }
-            100% { transform: translate(calc(100vw + 60px), -10vh); opacity: 0; }
-        }
-        @keyframes fly-ltr-2 {
-            0%   { transform: translate(-60px, 0); opacity: 0; }
-            5%   { opacity: 1; }
-            25%  { transform: translate(25vw, -35vh); }
-            50%  { transform: translate(50vw, -10vh); }
-            75%  { transform: translate(75vw, -40vh); }
-            95%  { opacity: 1; }
-            100% { transform: translate(calc(100vw + 60px), -20vh); opacity: 0; }
-        }
-        @keyframes fly-ltr-3 {
-            0%   { transform: translate(-60px, 0); opacity: 0; }
-            5%   { opacity: 1; }
-            25%  { transform: translate(25vw, 20vh); }
-            50%  { transform: translate(50vw, 35vh); }
-            75%  { transform: translate(75vw, -10vh); }
-            95%  { opacity: 1; }
-            100% { transform: translate(calc(100vw + 60px), 25vh); opacity: 0; }
-        }
-
-        /* Airplane fly animations (right-to-left) - wavy paths */
-        @keyframes fly-rtl-1 {
-            0%   { transform: scaleX(-1) translate(-60px, 0); opacity: 0; }
-            5%   { opacity: 1; }
-            25%  { transform: scaleX(-1) translate(25vw, -25vh); }
-            50%  { transform: scaleX(-1) translate(50vw, 20vh); }
-            75%  { transform: scaleX(-1) translate(75vw, -15vh); }
-            95%  { opacity: 1; }
-            100% { transform: scaleX(-1) translate(calc(100vw + 60px), 10vh); opacity: 0; }
-        }
-        @keyframes fly-rtl-2 {
-            0%   { transform: scaleX(-1) translate(-60px, 0); opacity: 0; }
-            5%   { opacity: 1; }
-            25%  { transform: scaleX(-1) translate(25vw, -40vh); }
-            50%  { transform: scaleX(-1) translate(50vw, -15vh); }
-            75%  { transform: scaleX(-1) translate(75vw, -35vh); }
-            95%  { opacity: 1; }
-            100% { transform: scaleX(-1) translate(calc(100vw + 60px), -25vh); opacity: 0; }
-        }
-
-        /* Main content */
+        /* ===== Content ===== */
         .content {
             position: relative;
             z-index: 1;
             text-align: center;
             padding: 2rem;
+            animation: fadeUp .4s ease-out;
         }
 
         h1 {
-            font-size: clamp(2.5rem, 6vw, 4rem);
-            font-weight: 800;
-            color: #0057B8;
-            letter-spacing: -0.02em;
-            margin-bottom: 0.75rem;
+            font-size: clamp(2.2rem, 6vw, 3.5rem);
+            font-weight: 700;
+            color: var(--accent);
+            letter-spacing: -0.04em;
+            margin-bottom: 0.5rem;
+            line-height: 1;
         }
 
         .subtitle {
-            font-size: clamp(1rem, 2.5vw, 1.35rem);
-            color: #4A6FA5;
-            margin-bottom: 0.5rem;
+            font-size: clamp(0.9rem, 2.2vw, 1rem);
+            color: var(--text-2);
+            margin-bottom: 0.3rem;
+            font-weight: 400;
         }
 
         .author {
-            font-size: clamp(0.85rem, 2vw, 1rem);
-            color: #8B9DC3;
+            font-size: clamp(0.75rem, 1.6vw, 0.85rem);
+            color: var(--text-3);
+            font-weight: 400;
         }
 
-        /* Future app list styles */
+        /* ===== App cards ===== */
         .app-list {
             list-style: none;
-            margin-top: 2rem;
+            margin-top: 2.2rem;
             padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            width: 100%;
+            max-width: 340px;
         }
-        .app-list li { margin: 0.5rem 0; }
-        .app-list a {
-            color: #0057B8;
+
+        .app-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--card-bd);
+            border-radius: 10px;
+            padding: 0.85rem 1.1rem;
             text-decoration: none;
+            color: var(--text);
             font-weight: 500;
-            transition: color 0.2s;
-        }
-        .app-list a:hover {
-            color: #FFD700;
-            text-decoration: underline;
+            font-size: 0.95rem;
+            transition: all .2s cubic-bezier(.4,0,.2,1);
+            box-shadow: 0 1px 4px var(--card-sh);
+            animation: fadeUp .4s ease-out .1s backwards;
         }
 
-        /* Language toggle */
-        .lang-toggle {
+        .app-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px var(--card-sh);
+            border-color: var(--accent);
+        }
+
+        .app-card:active { transform: translateY(-1px); }
+
+        .app-card .arrow {
+            color: var(--card-arrow);
+            font-size: 0.9rem;
+            transition: transform .15s ease;
+            opacity: 0.5;
+        }
+
+        .app-card:hover .arrow {
+            transform: translateX(2px);
+            opacity: 1;
+        }
+
+        /* ===== Floating controls ===== */
+        .controls-pill {
             position: fixed;
-            top: 1rem;
-            right: 1rem;
+            top: 0.75rem;
+            right: 0.75rem;
             z-index: 10;
-            background: rgba(0, 87, 184, 0.12);
-            color: #0057B8;
-            border: 1px solid rgba(0, 87, 184, 0.3);
-            padding: 0.35rem 0.8rem;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.85rem;
-            font-weight: 600;
-            transition: background 0.2s;
-        }
-        .lang-toggle:hover {
-            background: rgba(0, 87, 184, 0.22);
+            display: flex;
+            gap: 0.4rem;
+            align-items: center;
+            animation: fadeUp .3s ease-out .2s backwards;
         }
 
-        /* Accessibility: respect reduced motion */
+        /* Lang pill — identical to calculator */
+        .lang-pill {
+            display: flex;
+            background: var(--sf2);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--bd);
+            border-radius: 8px;
+            padding: 3px;
+            gap: 2px;
+            transition: all .25s;
+        }
+
+        .lang-pill .lang-opt {
+            padding: 4px 10px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.03em;
+            border-radius: 5px;
+            border: none;
+            background: transparent;
+            color: var(--text-3);
+            cursor: pointer;
+            transition: all .2s cubic-bezier(.4,0,.2,1);
+            line-height: 1.4;
+        }
+
+        .lang-pill .lang-opt:hover {
+            color: var(--text-2);
+        }
+
+        .lang-pill .lang-opt.active {
+            background: var(--accent);
+            color: #fff;
+            box-shadow: 0 1px 4px var(--accent-glow);
+        }
+
+        /* Theme toggle — identical to calculator */
+        .theme-toggle {
+            position: relative;
+            width: 40px;
+            height: 22px;
+            background: var(--tog-bg);
+            border: none;
+            border-radius: 11px;
+            cursor: pointer;
+            transition: background .25s;
+            padding: 0;
+            flex-shrink: 0;
+        }
+
+        .theme-toggle .toggle-knob {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--tog-knob);
+            transition: transform .3s cubic-bezier(.4,0,.2,1);
+            box-shadow: 0 1px 4px rgba(0,0,0,.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: translateX(18px);
+        }
+
+        .theme-toggle .toggle-knob svg {
+            width: 10px;
+            height: 10px;
+            fill: none;
+            stroke: #fff;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            transition: opacity .15s;
+        }
+
+        body.dark .theme-toggle .toggle-knob {
+            transform: translateX(0);
+        }
+
+        /* ===== Accessibility ===== */
         @media (prefers-reduced-motion: reduce) {
             .rect, .plane { animation: none !important; }
+            *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
         }
 
-        /* Mobile: fewer animated elements */
+        /* ===== Responsive ===== */
+        @media (max-width: 768px) {
+            .content { padding: 1.5rem; }
+        }
+
         @media (max-width: 480px) {
             .plane-4, .plane-5, .rect-6, .rect-7 { display: none; }
+            .content { padding: 1rem; }
+        }
+
+        @media (max-width: 380px) {
+            .controls-pill { top: 0.5rem; right: 0.5rem; gap: 0.3rem; }
+            .lang-pill .lang-opt { padding: 3px 8px; font-size: 10px; }
+            .theme-toggle { width: 34px; height: 18px; border-radius: 9px; }
+            .theme-toggle .toggle-knob { width: 14px; height: 14px; transform: translateX(16px); }
+            body.dark .theme-toggle .toggle-knob { transform: translateX(0); }
         }
     </style>
 </head>
@@ -292,7 +335,6 @@
 
     <!-- Animated background -->
     <div class="bg-layer">
-        <!-- Floating rectangles -->
         <div class="rect rect-1"></div>
         <div class="rect rect-2"></div>
         <div class="rect rect-3"></div>
@@ -301,34 +343,30 @@
         <div class="rect rect-6"></div>
         <div class="rect rect-7"></div>
 
-        <!-- Airplanes (paper-airplane style, line art) -->
-        <svg class="plane plane-1" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M32 18 L4 6 L14 18 L4 30 Z" stroke="rgba(0,87,184,0.3)" stroke-width="1.2" stroke-linejoin="round"/>
-            <line x1="14" y1="18" x2="4" y2="18" stroke="rgba(0,87,184,0.3)" stroke-width="1.2"/>
-        </svg>
-
-        <svg class="plane plane-2" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M32 18 L4 6 L14 18 L4 30 Z" stroke="rgba(255,215,0,0.4)" stroke-width="1.2" stroke-linejoin="round"/>
-            <line x1="14" y1="18" x2="4" y2="18" stroke="rgba(255,215,0,0.4)" stroke-width="1.2"/>
-        </svg>
-
-        <svg class="plane plane-3" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M32 18 L4 6 L14 18 L4 30 Z" stroke="rgba(0,87,184,0.25)" stroke-width="1.2" stroke-linejoin="round"/>
-            <line x1="14" y1="18" x2="4" y2="18" stroke="rgba(0,87,184,0.25)" stroke-width="1.2"/>
-        </svg>
-
-        <svg class="plane plane-4" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M32 18 L4 6 L14 18 L4 30 Z" stroke="rgba(255,215,0,0.35)" stroke-width="1.2" stroke-linejoin="round"/>
-            <line x1="14" y1="18" x2="4" y2="18" stroke="rgba(255,215,0,0.35)" stroke-width="1.2"/>
-        </svg>
-
-        <svg class="plane plane-5" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M32 18 L4 6 L14 18 L4 30 Z" stroke="rgba(0,87,184,0.3)" stroke-width="1.2" stroke-linejoin="round"/>
-            <line x1="14" y1="18" x2="4" y2="18" stroke="rgba(0,87,184,0.3)" stroke-width="1.2"/>
-        </svg>
+        <svg class="plane plane-1" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M32 18 L4 6 L14 18 L4 30 Z" stroke="var(--plane-a)" stroke-width="1" stroke-linejoin="round"/><line x1="14" y1="18" x2="4" y2="18" stroke="var(--plane-a)" stroke-width="1"/></svg>
+        <svg class="plane plane-2" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M32 18 L4 6 L14 18 L4 30 Z" stroke="var(--plane-b)" stroke-width="1" stroke-linejoin="round"/><line x1="14" y1="18" x2="4" y2="18" stroke="var(--plane-b)" stroke-width="1"/></svg>
+        <svg class="plane plane-3" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M32 18 L4 6 L14 18 L4 30 Z" stroke="var(--plane-a)" stroke-width="1" stroke-linejoin="round"/><line x1="14" y1="18" x2="4" y2="18" stroke="var(--plane-a)" stroke-width="1"/></svg>
+        <svg class="plane plane-4" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M32 18 L4 6 L14 18 L4 30 Z" stroke="var(--plane-b)" stroke-width="1" stroke-linejoin="round"/><line x1="14" y1="18" x2="4" y2="18" stroke="var(--plane-b)" stroke-width="1"/></svg>
+        <svg class="plane plane-5" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M32 18 L4 6 L14 18 L4 30 Z" stroke="var(--plane-a)" stroke-width="1" stroke-linejoin="round"/><line x1="14" y1="18" x2="4" y2="18" stroke="var(--plane-a)" stroke-width="1"/></svg>
     </div>
 
-    <button class="lang-toggle" id="lang-toggle">CZ</button>
+    <!-- Floating controls -->
+    <div class="controls-pill">
+        <div class="lang-pill" id="lang-pill">
+            <button class="lang-opt active" data-lang="en">EN</button>
+            <button class="lang-opt" data-lang="cz">CZ</button>
+        </div>
+        <button class="theme-toggle" id="theme-toggle" title="Toggle theme">
+            <span class="toggle-knob">
+                <svg class="icon-sun" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41m11.32-11.32l1.41-1.41"/>
+                </svg>
+                <svg class="icon-moon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:none">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+                </svg>
+            </span>
+        </button>
+    </div>
 
     <!-- Main content -->
     <main class="content">
@@ -337,11 +375,12 @@
         <p class="author">Author: Viktor Bruncl&iacute;k with Claude Code</p>
 
         <ul class="app-list" id="app-list">
-            <li><a href="political-calculator/" data-en="Political Calculator" data-cz="Politick&aacute; kalkula&ccaron;ka">Political Calculator</a></li>
+            <li><a class="app-card" href="political-calculator/" data-en="Political Calculator" data-cz="Politick&aacute; kalkula&ccaron;ka"><span class="app-card-label">Political Calculator</span><span class="arrow">&rarr;</span></a></li>
         </ul>
     </main>
 
     <script>
+    // Airplane collision detection
     (function () {
         var planes = document.querySelectorAll('.plane');
         var cooldowns = {};
@@ -356,17 +395,13 @@
                 for (var j = i + 1; j < planes.length; j++) {
                     var key = i + '-' + j;
                     if (cooldowns[key]) continue;
-
                     var a = center(planes[i]);
                     var b = center(planes[j]);
                     var dist = Math.hypot(a.x - b.x, a.y - b.y);
-
-                    if (dist < 70) {
+                    if (dist < 50) {
                         cooldowns[key] = true;
                         scatter(planes[i], planes[j], a, b);
-                        setTimeout(function (k) {
-                            return function () { delete cooldowns[k]; };
-                        }(key), 3000);
+                        setTimeout(function (k) { return function () { delete cooldowns[k]; }; }(key), 3000);
                     }
                 }
             }
@@ -374,50 +409,84 @@
         }
 
         function scatter(planeA, planeB, ca, cb) {
-            // Decide who goes up, who goes down
             var goUp = ca.y <= cb.y;
-            var pushY = 250 + Math.random() * 150;
-            var pushX = 40 + Math.random() * 60;
-
+            var pushY = 200 + Math.random() * 120;
+            var pushX = 30 + Math.random() * 50;
             boom(planeA, goUp ? -pushX : pushX, goUp ? -pushY : pushY);
             boom(planeB, goUp ? pushX : -pushX, goUp ? pushY : -pushY);
         }
 
         function boom(el, tx, ty) {
-            var spin = (Math.random() - 0.5) * 1080;
+            var spin = (Math.random() - 0.5) * 720;
             el.animate([
                 { transform: 'translate(0,0) rotate(0deg)', offset: 0 },
                 { transform: 'translate(' + tx + 'px,' + ty + 'px) rotate(' + spin + 'deg)', offset: 0.3 },
                 { transform: 'translate(0,0) rotate(0deg)', offset: 1 }
-            ], {
-                duration: 1200,
-                easing: 'ease-out',
-                composite: 'add'
-            });
+            ], { duration: 1000, easing: 'ease-out', composite: 'add' });
         }
 
         requestAnimationFrame(check);
     })();
 
-    // Language toggle
+    // Language toggle + Theme toggle
     (function () {
         var lang = 'en';
-        var btn = document.getElementById('lang-toggle');
         var subtitle = document.getElementById('subtitle');
         var links = document.querySelectorAll('#app-list a');
+        var langPill = document.getElementById('lang-pill');
+        var langOpts = langPill.querySelectorAll('.lang-opt');
 
         var texts = {
-            subtitle: { en: 'A collection of small web apps.', cz: 'Sb\u00edrka mal\u00fdch webov\u00fdch aplikac\u00ed.' },
-            btn: { en: 'CZ', cz: 'EN' }
+            subtitle: { en: 'A collection of small web apps.', cz: 'Sb\u00edrka mal\u00fdch webov\u00fdch aplikac\u00ed.' }
         };
 
-        btn.addEventListener('click', function () {
-            lang = lang === 'en' ? 'cz' : 'en';
-            btn.textContent = texts.btn[lang];
-            subtitle.textContent = texts[lang === 'en' ? 'subtitle' : 'subtitle'][lang === 'en' ? 'en' : 'cz'];
+        function updateLang() {
+            subtitle.textContent = texts.subtitle[lang];
             for (var i = 0; i < links.length; i++) {
-                links[i].textContent = links[i].getAttribute('data-' + lang);
+                var label = links[i].querySelector('.app-card-label');
+                if (label) label.textContent = links[i].getAttribute('data-' + lang);
             }
+            for (var j = 0; j < langOpts.length; j++) {
+                if (langOpts[j].getAttribute('data-lang') === lang) {
+                    langOpts[j].classList.add('active');
+                } else {
+                    langOpts[j].classList.remove('active');
+                }
+            }
+        }
+
+        for (var i = 0; i < langOpts.length; i++) {
+            langOpts[i].addEventListener('click', function () {
+                var newLang = this.getAttribute('data-lang');
+                if (newLang === lang) return;
+                lang = newLang;
+                updateLang();
+            });
+        }
+
+        // Theme toggle
+        var themeToggle = document.getElementById('theme-toggle');
+        var iconSun = themeToggle.querySelector('.icon-sun');
+        var iconMoon = themeToggle.querySelector('.icon-moon');
+        var currentTheme = localStorage.getItem('theme') || 'light';
+        applyTheme(currentTheme);
+
+        function applyTheme(theme) {
+            currentTheme = theme;
+            if (theme === 'dark') {
+                document.body.classList.add('dark');
+                iconSun.style.display = 'none';
+                iconMoon.style.display = '';
+            } else {
+                document.body.classList.remove('dark');
+                iconSun.style.display = '';
+                iconMoon.style.display = 'none';
+            }
+            localStorage.setItem('theme', theme);
+        }
+
+        themeToggle.addEventListener('click', function () {
+            applyTheme(currentTheme === 'light' ? 'dark' : 'light');
         });
     })();
     </script>

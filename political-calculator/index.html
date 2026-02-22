@@ -4,15 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Political Calculator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <script>
+        (function() {
+            var t = localStorage.getItem('theme') || 'light';
+            if (t === 'dark') document.body.classList.add('dark');
+        })();
+    </script>
     <header>
         <a href="../" class="header-btn home-link" id="home-link" title="Playground">&#8592; Playground</a>
         <h1 id="header-title">Political Calculator</h1>
         <div class="header-right">
             <button class="header-btn" id="btn-reset" title="Restart">&#8634;</button>
-            <button class="header-btn" id="lang-btn">CZ</button>
+            <div class="lang-pill" id="lang-pill">
+                <button class="lang-opt active" data-lang="en">EN</button>
+                <button class="lang-opt" data-lang="cz">CZ</button>
+            </div>
+            <button class="theme-toggle" id="theme-toggle" title="Toggle theme">
+                <span class="toggle-knob">
+                    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41m11.32-11.32l1.41-1.41"/>
+                    </svg>
+                    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:none">
+                        <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+                    </svg>
+                </span>
+            </button>
         </div>
     </header>
     <div id="app"></div>
