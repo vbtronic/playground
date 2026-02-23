@@ -28,9 +28,8 @@ All pages default to light mode. Dark mode is available via the toggle on every 
 
 ## Language & translation rules
 
-- **Legal content is always in Czech.** Disclaimers, terms of use, legal notices, and similar legal text must always remain in Czech — they are never translated to English.
-- **Author credits are always in Czech.** Author names and attribution (e.g. "Autor: …") stay in Czech regardless of the selected language.
-- **Czech-specific app content stays in Czech.** Apps dealing with Czech law, politics, or other jurisdiction-specific topics (e.g. Political Calculator / Politická kalkulačka) keep their domain-specific content (party names, legal references, official terminology) in Czech even in the English version.
+- **Legal content is always in English.** Disclaimers, terms of use, legal notices, and similar legal text must always remain in English — they are never translated to Czech.
+- **Author credits are always in English.** Author names and attribution (e.g. "Author: …") stay in English regardless of the selected language.
 
 ## Local testing
 

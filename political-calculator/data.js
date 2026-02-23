@@ -146,6 +146,6 @@ var DATA = {
         leader: { en: 'Leader', cz: 'Předseda' },
         restart: { en: 'Start Over', cz: 'Začít znovu' },
         langToggle: { en: 'CZ', cz: 'EN' },
-        disclaimer: { en: 'Tato kalkulačka je pouze informativní a nepředstavuje oficiální doporučení.', cz: 'Tato kalkulačka je pouze informativní a nepředstavuje oficiální doporučení.' }
+        disclaimer: { en: 'This calculator is for informational purposes only and does not represent an official endorsement.', cz: 'This calculator is for informational purposes only and does not represent an official endorsement.' }
     }
 };
