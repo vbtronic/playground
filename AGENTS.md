@@ -25,6 +25,12 @@ Every app must include:
 
 All pages default to light mode. Dark mode is available via the toggle on every page.
 
+## Language & translation rules
+
+- **Legal content is always in Czech.** Disclaimers, terms of use, legal notices, and similar legal text must always remain in Czech — they are never translated to English.
+- **Author credits are always in Czech.** Author names and attribution (e.g. "Autor: …") stay in Czech regardless of the selected language.
+- **Czech-specific app content stays in Czech.** Apps dealing with Czech law, politics, or other jurisdiction-specific topics (e.g. Political Calculator / Politická kalkulačka) keep their domain-specific content (party names, legal references, official terminology) in Czech even in the English version.
+
 ## Local testing
 
 Before pushing, serve the repo locally and verify the app works in a browser. Any simple static file server will do:
