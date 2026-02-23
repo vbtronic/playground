@@ -151,8 +151,8 @@ var Car = (function () {
         // Steering (only when moving)
         if (Math.abs(this.speed) > 0.01) {
             var steer = 0;
-            if (inp.steerLeft) steer = -1;
-            if (inp.steerRight) steer = 1;
+            if (inp.steerLeft) steer = 1;
+            if (inp.steerRight) steer = -1;
 
             var speedFactor = Math.min(Math.abs(this.speed) / cfg.maxSpeed, 1);
             var turnAmount = steer * cfg.turnSpeed * (0.4 + 0.6 * speedFactor);

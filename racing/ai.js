@@ -60,8 +60,8 @@ var AI = (function () {
 
         // Steer
         var steerThreshold = 0.05;
-        car.input.steerRight = angleDiff > steerThreshold;
-        car.input.steerLeft = angleDiff < -steerThreshold;
+        car.input.steerLeft = angleDiff > steerThreshold;
+        car.input.steerRight = angleDiff < -steerThreshold;
 
         // Speed control - brake for sharp curves
         var aheadT = (currentT + this.lookAhead * 3) % 1;
