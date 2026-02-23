@@ -2,7 +2,7 @@
     'use strict';
 
     var state = {
-        lang: 'en',
+        lang: localStorage.getItem('lang') || 'en',
         screen: 'welcome',
         spectrum: null,
         currentQuestion: 0,
@@ -58,6 +58,7 @@
             var newLang = this.getAttribute('data-lang');
             if (newLang === state.lang) return;
             state.lang = newLang;
+            localStorage.setItem('lang', newLang);
             updateLangPill();
             headerTitle.textContent = t('title');
             render();
@@ -298,6 +299,10 @@
             render();
         });
     }
+
+    // Apply saved language on load
+    updateLangPill();
+    headerTitle.textContent = t('title');
 
     // Initial render
     render();
