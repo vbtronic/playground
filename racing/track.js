@@ -155,29 +155,41 @@ var TRACK = (function () {
         // Decorations
         addTrees(scene);
         addGrandstand(scene);
+        addParkingArea(scene);
     }
 
     function addBarrierWalls(scene, edgeVerts, resolution, isLeft) {
         var wallH = 1.2;
+        var wallDist = trackWidth + 1.5;
+        var sign = isLeft ? 1 : -1;
         var verts = [];
-        for (var i = 0; i < resolution; i++) {
-            var li = i * 3;
-            var ni = (i + 1) * 3;
+
+        // Pre-compute wall positions, detect and fix self-intersections
+        var wallPts = [];
+        for (var i = 0; i <= resolution; i++) {
             var t = i / resolution;
+            var p = curve.getPoint(t);
             var n = getNormal(t);
-            var sign = isLeft ? 1 : -1;
-            var offset = 1.5; // curb width
-            var ox = n.x * offset * sign;
-            var oz = n.z * offset * sign;
-
-            var ax = edgeVerts[li] + ox, az = edgeVerts[li + 2] + oz;
-            var bx = edgeVerts[ni] + ox, bz = edgeVerts[ni + 2] + oz;
-
-            // Bottom-front, top-front, bottom-back (triangle 1)
-            verts.push(ax, 0, az, ax, wallH, az, bx, 0, bz);
-            // Top-front, top-back, bottom-back (triangle 2)
-            verts.push(ax, wallH, az, bx, wallH, bz, bx, 0, bz);
+            wallPts.push({
+                x: p.x + n.x * wallDist * sign,
+                z: p.z + n.z * wallDist * sign
+            });
         }
+
+        // Build wall segments, skip degenerate ones
+        for (var j = 0; j < resolution; j++) {
+            var a = wallPts[j];
+            var b = wallPts[j + 1];
+            // Skip if points too close (collapsed inner corner)
+            var segDx = b.x - a.x;
+            var segDz = b.z - a.z;
+            if (segDx * segDx + segDz * segDz < 0.01) continue;
+
+            verts.push(a.x, 0, a.z, a.x, wallH, a.z, b.x, 0, b.z);
+            verts.push(a.x, wallH, a.z, b.x, wallH, b.z, b.x, 0, b.z);
+        }
+
+        if (verts.length === 0) return;
         var geo = new THREE.BufferGeometry();
         geo.setAttribute('position', new THREE.Float32BufferAttribute(verts, 3));
         geo.computeVertexNormals();
@@ -438,6 +450,48 @@ var TRACK = (function () {
 
     generateCheckpoints();
 
+    // Parking area: off-track zone near start/finish, on the opposite side from grandstand
+    function getParkingPositions(count) {
+        var p = curve.getPoint(0.02); // slightly past start/finish
+        var n = getNormal(0.02);
+        var tan = getTangent(0.02);
+        var positions = [];
+        // Park on the opposite side from the grandstand (negative normal direction)
+        for (var i = 0; i < count; i++) {
+            var row = Math.floor(i / 2);
+            var col = (i % 2 === 0) ? 0 : 1;
+            positions.push({
+                x: p.x - n.x * (trackWidth + 10 + col * 4) + tan.x * (row * 5),
+                z: p.z - n.z * (trackWidth + 10 + col * 4) + tan.z * (row * 5)
+            });
+        }
+        return positions;
+    }
+
+    function addParkingArea(scene) {
+        var p = curve.getPoint(0.02);
+        var n = getNormal(0.02);
+        var tan = getTangent(0.02);
+        // Parking lot surface
+        var geo = new THREE.PlaneGeometry(16, 20);
+        var mat = new THREE.MeshStandardMaterial({
+            color: 0x444450,
+            roughness: 0.9,
+            metalness: 0,
+            side: THREE.DoubleSide
+        });
+        var lot = new THREE.Mesh(geo, mat);
+        lot.rotation.x = -Math.PI / 2;
+        var lotX = p.x - n.x * (trackWidth + 14);
+        var lotZ = p.z - n.z * (trackWidth + 14);
+        lot.position.set(lotX, 0.005, lotZ);
+        var angle = Math.atan2(tan.x, tan.z);
+        lot.rotation.y = angle;
+        lot.rotation.order = 'YXZ';
+        lot.receiveShadow = true;
+        scene.add(lot);
+    }
+
     return {
         curve: curve,
         trackWidth: trackWidth,
@@ -451,6 +505,8 @@ var TRACK = (function () {
         isOnTrack: isOnTrack,
         createTrackMesh: createTrackMesh,
         crossedCheckpoint: crossedCheckpoint,
-        getStartPositions: getStartPositions
+        getStartPositions: getStartPositions,
+        getParkingPositions: getParkingPositions,
+        addParkingArea: addParkingArea
     };
 })();

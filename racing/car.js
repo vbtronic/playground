@@ -24,6 +24,8 @@ var Car = (function () {
         this.finished = false;
         this.finishTime = 0;
         this.raceProgress = 0;
+        this.parked = false;
+        this.parkingIndex = undefined;
 
         // Previous position for checkpoint detection
         this.prevX = this.x;
@@ -177,22 +179,39 @@ var Car = (function () {
         this.x += this.vx * s;
         this.z += this.vz * s;
 
-        // Track barrier - push car back onto track if it goes off
+        // Track barrier - bounce off wall if car goes off track
+        // Skip barrier for finished cars (they autopilot off-track to parking)
         this.onTrack = TRACK.isOnTrack(this.x, this.z);
-        if (!this.onTrack) {
+        if (!this.onTrack && !this.finished) {
             var nearT = TRACK.getNearestT(this.x, this.z);
             var center = TRACK.getPointAtT(nearT);
             var edgeDx = this.x - center.x;
             var edgeDz = this.z - center.z;
             var edgeDist = Math.sqrt(edgeDx * edgeDx + edgeDz * edgeDz);
             if (edgeDist > 0.1) {
-                var maxDist = TRACK.trackWidth + 1.5;
-                this.x = center.x + (edgeDx / edgeDist) * maxDist;
-                this.z = center.z + (edgeDz / edgeDist) * maxDist;
-                // Bounce speed reduction
-                this.speed *= 0.6;
-                this.vx *= 0.6;
-                this.vz *= 0.6;
+                // Push back INSIDE the track
+                var pushDist = TRACK.trackWidth * 0.93;
+                this.x = center.x + (edgeDx / edgeDist) * pushDist;
+                this.z = center.z + (edgeDz / edgeDist) * pushDist;
+
+                // Reflect velocity off the wall normal
+                var wallNx = edgeDx / edgeDist;
+                var wallNz = edgeDz / edgeDist;
+                var dot = this.vx * wallNx + this.vz * wallNz;
+                if (dot > 0) {
+                    // Bounce: reflect velocity component perpendicular to wall
+                    this.vx -= 1.6 * dot * wallNx;
+                    this.vz -= 1.6 * dot * wallNz;
+                    // Energy loss proportional to impact speed
+                    var impactSpeed = Math.abs(dot);
+                    var energyLoss = Math.min(0.6, 0.15 + impactSpeed * 0.4);
+                    this.speed *= (1 - energyLoss);
+                    this.vx *= (1 - energyLoss * 0.3);
+                    this.vz *= (1 - energyLoss * 0.3);
+                } else {
+                    // Sliding along wall, small friction
+                    this.speed *= 0.92;
+                }
             }
         }
 
@@ -219,6 +238,8 @@ var Car = (function () {
         this.finished = false;
         this.finishTime = 0;
         this.raceProgress = 0;
+        this.parked = false;
+        this.parkingIndex = undefined;
         this.prevX = x;
         this.prevZ = z;
         this.input = { accelerate: false, brake: false, steerLeft: false, steerRight: false };

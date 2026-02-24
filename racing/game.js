@@ -9,7 +9,8 @@
         difficulty: 'medium',
         raceStartTime: 0,
         raceElapsed: 0,
-        countdownValue: 3
+        countdownValue: 3,
+        resultsShown: false
     };
 
     // DOM refs
@@ -25,6 +26,8 @@
     var playerCar, aiCars = [], allCars = [];
     var aiDrivers = [];
     var animFrameId = null;
+    var parkingSpots = [];
+    var finishedCount = 0;
 
     // HUD elements
     var hudEl, countdownEl, overlayEl, minimapEl, minimapCtx, controlsHintEl;
@@ -198,6 +201,8 @@
         aiDrivers = [];
 
         var positions = TRACK.getStartPositions(1 + cfg.aiCount);
+        parkingSpots = TRACK.getParkingPositions(1 + cfg.aiCount);
+        finishedCount = 0;
 
         // Player car
         playerCar = new Car({
@@ -297,6 +302,7 @@
         initCars();
         state.screen = 'countdown';
         state.countdownValue = 3;
+        state.resultsShown = false;
 
         countdownEl = document.createElement('div');
         countdownEl.className = 'countdown';
@@ -420,9 +426,10 @@
         if (!minimapCtx) return;
         var ctx = minimapCtx;
         var w = 130, h = 130;
+        var cx = w / 2, cy = h / 2;
         ctx.clearRect(0, 0, w, h);
 
-        // Find bounds of track
+        // Find bounds to compute scale
         var minX = Infinity, maxX = -Infinity, minZ = Infinity, maxZ = -Infinity;
         var pts = TRACK.splinePoints;
         for (var i = 0; i < pts.length; i++) {
@@ -432,25 +439,29 @@
             if (pts[i].z > maxZ) maxZ = pts[i].z;
         }
 
-        var pad = 15;
-        var scaleX = (w - pad * 2) / (maxX - minX);
-        var scaleZ = (h - pad * 2) / (maxZ - minZ);
-        var scale = Math.min(scaleX, scaleZ);
-        var offX = (w - (maxX - minX) * scale) / 2;
-        var offZ = (h - (maxZ - minZ) * scale) / 2;
+        var pad = 20;
+        var rangeX = maxX - minX;
+        var rangeZ = maxZ - minZ;
+        var scale = Math.min((w - pad * 2) / rangeX, (h - pad * 2) / rangeZ);
+        var midX = (minX + maxX) / 2;
+        var midZ = (minZ + maxZ) / 2;
 
-        function toMX(x) { return (x - minX) * scale + offX; }
-        function toMZ(z) { return (z - minZ) * scale + offZ; }
+        // Rotate minimap so player's forward direction is UP
+        var rot = playerCar ? -playerCar.angle : 0;
 
-        // Draw track outline
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.rotate(rot);
+
+        // Draw track outline (rotated around player)
         ctx.strokeStyle = 'rgba(150,150,150,0.6)';
         ctx.lineWidth = 3;
         ctx.beginPath();
         for (var j = 0; j < pts.length; j++) {
-            var mx = toMX(pts[j].x);
-            var mz = toMZ(pts[j].z);
-            if (j === 0) ctx.moveTo(mx, mz);
-            else ctx.lineTo(mx, mz);
+            var tx = (pts[j].x - midX) * scale;
+            var tz = (pts[j].z - midZ) * scale;
+            if (j === 0) ctx.moveTo(tx, tz);
+            else ctx.lineTo(tx, tz);
         }
         ctx.closePath();
         ctx.stroke();
@@ -458,11 +469,28 @@
         // Draw cars
         for (var k = 0; k < allCars.length; k++) {
             var car = allCars[k];
+            var carMx = (car.x - midX) * scale;
+            var carMz = (car.z - midZ) * scale;
             ctx.fillStyle = car.color;
             ctx.beginPath();
-            ctx.arc(toMX(car.x), toMZ(car.z), car.isPlayer ? 4 : 3, 0, Math.PI * 2);
+            ctx.arc(carMx, carMz, car.isPlayer ? 5 : 3, 0, Math.PI * 2);
             ctx.fill();
+
+            // Draw direction indicator for player
+            if (car.isPlayer) {
+                ctx.strokeStyle = car.color;
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(carMx, carMz);
+                ctx.lineTo(
+                    carMx + Math.sin(car.angle) * 8,
+                    carMz + Math.cos(car.angle) * 8
+                );
+                ctx.stroke();
+            }
         }
+
+        ctx.restore();
     }
 
     // ===== Controls hint =====
@@ -568,7 +596,9 @@
     function resolveCollisions() {
         var collisionRadius = 2.5;
         for (var i = 0; i < allCars.length; i++) {
+            if (allCars[i].parked) continue;
             for (var j = i + 1; j < allCars.length; j++) {
+                if (allCars[j].parked) continue;
                 var a = allCars[i];
                 var b = allCars[j];
                 var dx = b.x - a.x;
@@ -598,6 +628,41 @@
         }
     }
 
+    // ===== Autopilot to parking =====
+    function autopilotToParking(car, dt) {
+        var spot = parkingSpots[car.parkingIndex];
+        if (!spot) return;
+
+        var dx = spot.x - car.x;
+        var dz = spot.z - car.z;
+        var dist = Math.sqrt(dx * dx + dz * dz);
+
+        if (dist < 2) {
+            // Arrived at parking spot
+            car.speed = 0;
+            car.vx = 0;
+            car.vz = 0;
+            car.parked = true;
+            car._updateMesh();
+            return;
+        }
+
+        // Steer toward parking spot
+        var targetAngle = Math.atan2(dx, dz);
+        var angleDiff = targetAngle - car.angle;
+        while (angleDiff > Math.PI) angleDiff -= 2 * Math.PI;
+        while (angleDiff < -Math.PI) angleDiff += 2 * Math.PI;
+
+        // Limit parking speed to gentle pace
+        var parkSpeed = 0.6;
+        car.input.steerLeft = angleDiff > 0.08;
+        car.input.steerRight = angleDiff < -0.08;
+        car.input.accelerate = car.speed < parkSpeed && dist > 3;
+        car.input.brake = car.speed > parkSpeed || dist < 5;
+
+        car.update(dt);
+    }
+
     // ===== Game Loop =====
     function gameLoop() {
         animFrameId = requestAnimationFrame(gameLoop);
@@ -607,31 +672,45 @@
             state.raceElapsed += dt;
 
             // Update player
-            updatePlayerInput();
-            playerCar.update(dt);
+            if (!playerCar.finished) {
+                updatePlayerInput();
+                playerCar.update(dt);
+            } else if (!playerCar.parked) {
+                autopilotToParking(playerCar, dt);
+            }
 
             // Update AI
             for (var i = 0; i < aiDrivers.length; i++) {
-                aiDrivers[i].update(dt);
-                aiCars[i].update(dt);
+                if (!aiCars[i].finished) {
+                    aiDrivers[i].update(dt);
+                    aiCars[i].update(dt);
+                } else if (!aiCars[i].parked) {
+                    autopilotToParking(aiCars[i], dt);
+                }
             }
 
-            // Collisions
+            // Collisions (skip parked cars)
             resolveCollisions();
 
-            // Checkpoints
+            // Checkpoints (only for non-finished cars)
             for (var j = 0; j < allCars.length; j++) {
-                updateCheckpoints(allCars[j]);
+                if (!allCars[j].finished) {
+                    updateCheckpoints(allCars[j]);
+                }
+                // Assign parking spot when car finishes
+                if (allCars[j].finished && allCars[j].parkingIndex === undefined) {
+                    allCars[j].parkingIndex = finishedCount;
+                    finishedCount++;
+                }
             }
 
-            // Check race end
-            if (playerCar.finished) {
-                // Let AI finish or just show results
-                stopGameLoop();
-                state.screen = 'results';
-                showResults();
-            } else {
-                // Check if all AI finished (shouldn't end race, player still racing)
+            // Show results when player finishes AND is parked (or after short delay)
+            if (playerCar.finished && !state.resultsShown) {
+                if (playerCar.parked || (state.raceElapsed - playerCar.finishTime > 4)) {
+                    state.resultsShown = true;
+                    state.screen = 'results';
+                    showResults();
+                }
             }
 
             updateCamera();
