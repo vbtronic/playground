@@ -63,19 +63,19 @@ var AI = (function () {
         car.input.steerLeft = angleDiff > steerThreshold;
         car.input.steerRight = angleDiff < -steerThreshold;
 
-        // Speed control - brake for sharp curves
-        var aheadT = (currentT + this.lookAhead * 2.5) % 1;
+        // Speed control - brake only for very sharp curves
+        var aheadT = (currentT + this.lookAhead * 2) % 1;
         var tan1 = TRACK.getTangent(currentT);
         var tan2 = TRACK.getTangent(aheadT);
         var curvature = 1 - (tan1.x * tan2.x + tan1.z * tan2.z); // 0 = straight, ~2 = U-turn
 
         var desiredSpeed = this.targetSpeed;
-        if (curvature > 0.08) {
-            desiredSpeed *= Math.max(0.55, 1 - curvature * 2);
+        if (curvature > 0.12) {
+            desiredSpeed *= Math.max(0.7, 1 - curvature * 1.5);
         }
 
         car.input.accelerate = car.speed < desiredSpeed;
-        car.input.brake = car.speed > desiredSpeed * 1.15;
+        car.input.brake = car.speed > desiredSpeed * 1.3;
 
         // Stuck detection
         if (Math.abs(car.speed) < 0.02) {

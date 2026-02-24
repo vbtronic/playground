@@ -41,10 +41,10 @@ var DATA = {
         offTrackPenalty: 0.96,
         reverseMax: 0.5,
 
-        aiSpeedEasy: 0.80,
-        aiSpeedMedium: 0.92,
-        aiSpeedHard: 0.99,
-        aiWander: 0.15,
+        aiSpeedEasy: 0.90,
+        aiSpeedMedium: 0.97,
+        aiSpeedHard: 1.00,
+        aiWander: 0.08,
 
         cameraHeight: 55,
         cameraLookAhead: 12,
