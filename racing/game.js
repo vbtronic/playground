@@ -536,9 +536,16 @@
             }
         }
 
-        // Update race progress
-        var cpProgress = car.nextCheckpoint / cps.length;
-        car.raceProgress = car.lap + cpProgress;
+        // Precise race progress using actual track position
+        var trackT = TRACK.getNearestT(car.x, car.z);
+        // Handle wrap-around near start/finish line
+        if (car.nextCheckpoint > cps.length / 2 && trackT < 0.25) {
+            trackT += 1.0;
+        }
+        if (car.nextCheckpoint <= 1 && trackT > 0.75) {
+            trackT -= 1.0;
+        }
+        car.raceProgress = car.lap + trackT;
     }
 
     // ===== Position tracking =====

@@ -186,7 +186,7 @@ var Car = (function () {
             var edgeDz = this.z - center.z;
             var edgeDist = Math.sqrt(edgeDx * edgeDx + edgeDz * edgeDz);
             if (edgeDist > 0.1) {
-                var maxDist = TRACK.trackWidth * 0.95;
+                var maxDist = TRACK.trackWidth + 1.5;
                 this.x = center.x + (edgeDx / edgeDist) * maxDist;
                 this.z = center.z + (edgeDz / edgeDist) * maxDist;
                 // Bounce speed reduction

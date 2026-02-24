@@ -32,24 +32,24 @@ var DATA = {
         aiCount: 4,
         countdownDuration: 3,
 
-        maxSpeed: 1.8,
-        acceleration: 0.035,
+        maxSpeed: 2.0,
+        acceleration: 0.04,
         brakeForce: 0.05,
         friction: 0.015,
-        turnSpeed: 0.045,
+        turnSpeed: 0.04,
         driftFactor: 0.92,
         offTrackPenalty: 0.96,
         reverseMax: 0.5,
 
-        aiSpeedEasy: 0.72,
-        aiSpeedMedium: 0.86,
-        aiSpeedHard: 0.96,
-        aiWander: 0.3,
+        aiSpeedEasy: 0.80,
+        aiSpeedMedium: 0.92,
+        aiSpeedHard: 0.99,
+        aiWander: 0.15,
 
-        cameraHeight: 70,
+        cameraHeight: 85,
         cameraLookAhead: 8,
 
-        trackWidth: 10,
+        trackWidth: 22,
 
         carColors: ['#e53935', '#1e88e5', '#43a047', '#fdd835', '#8e24aa'],
         aiNames: ['Blue', 'Green', 'Yellow', 'Purple']

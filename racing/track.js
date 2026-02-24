@@ -70,7 +70,7 @@ var TRACK = (function () {
     // Create track meshes and add to scene
     function createTrackMesh(scene) {
         // Ground plane
-        var groundGeo = new THREE.PlaneGeometry(300, 300);
+        var groundGeo = new THREE.PlaneGeometry(400, 400);
         var groundMat = new THREE.MeshStandardMaterial({
             color: 0x4a7a2e,
             roughness: 0.9,
@@ -158,7 +158,7 @@ var TRACK = (function () {
     }
 
     function addBarrierWalls(scene, edgeVerts, resolution, isLeft) {
-        var wallH = 0.7;
+        var wallH = 1.2;
         var verts = [];
         for (var i = 0; i < resolution; i++) {
             var li = i * 3;
@@ -325,7 +325,7 @@ var TRACK = (function () {
 
         for (var i = 0; i < 40; i++) {
             var angle = Math.random() * Math.PI * 2;
-            var dist = 70 + Math.random() * 60;
+            var dist = 90 + Math.random() * 60;
             var x = Math.cos(angle) * dist;
             var z = Math.sin(angle) * dist;
 
@@ -356,9 +356,9 @@ var TRACK = (function () {
             mat
         );
         stand.position.set(
-            p.x + n.x * (trackWidth + 12),
+            p.x + n.x * (trackWidth + 15),
             2,
-            p.z + n.z * (trackWidth + 12)
+            p.z + n.z * (trackWidth + 15)
         );
         stand.castShadow = true;
         stand.receiveShadow = true;
@@ -428,8 +428,8 @@ var TRACK = (function () {
             var row = Math.floor(i / 2);
             var col = (i % 2 === 0) ? -1 : 1;
             positions.push({
-                x: p.x - tangent.x * (row * 5 + 3) + normal.x * col * 3,
-                z: p.z - tangent.z * (row * 5 + 3) + normal.z * col * 3,
+                x: p.x - tangent.x * (row * 6 + 3) + normal.x * col * 5,
+                z: p.z - tangent.z * (row * 6 + 3) + normal.z * col * 5,
                 angle: angle
             });
         }
