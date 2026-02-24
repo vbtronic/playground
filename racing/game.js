@@ -595,46 +595,68 @@
         return allCars.length;
     }
 
-    // ===== Car-to-car collision =====
-    function resolveCollisions() {
-        var collisionRadius = 3.5; // car body is 2.2 x 4.2
-        for (var i = 0; i < allCars.length; i++) {
-            if (allCars[i].parked) continue;
-            for (var j = i + 1; j < allCars.length; j++) {
-                if (allCars[j].parked) continue;
-                var a = allCars[i];
-                var b = allCars[j];
-                var dx = b.x - a.x;
-                var dz = b.z - a.z;
-                var dist = Math.sqrt(dx * dx + dz * dz);
+    // ===== Car-to-car collision (oriented bounding box) =====
+    var CAR_HALF_LEN = 2.3;  // half of 4.2 + small margin
+    var CAR_HALF_WID = 1.2;  // half of 2.2 + small margin
 
-                if (dist < collisionRadius && dist > 0) {
-                    var overlap = collisionRadius - dist;
+    function resolveCollisions() {
+        // Run 2 iterations for better separation
+        for (var iter = 0; iter < 2; iter++) {
+            for (var i = 0; i < allCars.length; i++) {
+                if (allCars[i].parked) continue;
+                for (var j = i + 1; j < allCars.length; j++) {
+                    if (allCars[j].parked) continue;
+                    var a = allCars[i];
+                    var b = allCars[j];
+                    var dx = b.x - a.x;
+                    var dz = b.z - a.z;
+                    var dist = Math.sqrt(dx * dx + dz * dz);
+
+                    // Quick reject — no collision possible beyond max diagonal
+                    if (dist > 6 || dist < 0.01) continue;
+
+                    // Separation normal
                     var nx = dx / dist;
                     var nz = dz / dist;
-                    // Push apart firmly
-                    var pushX = nx * overlap * 0.7;
-                    var pushZ = nz * overlap * 0.7;
 
+                    // Project each car's oriented box onto separation axis
+                    // Support function: |dot(axis, fwd)| * halfLen + |dot(axis, right)| * halfWid
+                    var sinA = Math.sin(a.angle), cosA = Math.cos(a.angle);
+                    var fwdDotA = Math.abs(nx * sinA + nz * cosA);
+                    var sideDotA = Math.abs(nx * cosA - nz * sinA);
+                    var halfA = fwdDotA * CAR_HALF_LEN + sideDotA * CAR_HALF_WID;
+
+                    var sinB = Math.sin(b.angle), cosB = Math.cos(b.angle);
+                    var fwdDotB = Math.abs(nx * sinB + nz * cosB);
+                    var sideDotB = Math.abs(nx * cosB - nz * sinB);
+                    var halfB = fwdDotB * CAR_HALF_LEN + sideDotB * CAR_HALF_WID;
+
+                    var minDist = halfA + halfB;
+                    var overlap = minDist - dist;
+                    if (overlap <= 0) continue;
+
+                    // Push apart
+                    var pushX = nx * overlap * 0.55;
+                    var pushZ = nz * overlap * 0.55;
                     a.x -= pushX;
                     a.z -= pushZ;
                     b.x += pushX;
                     b.z += pushZ;
 
-                    // Velocity exchange along collision normal
-                    var relVx = b.vx - a.vx;
-                    var relVz = b.vz - a.vz;
-                    var relDot = relVx * nx + relVz * nz;
-                    if (relDot < 0) {
-                        a.vx += relDot * nx * 0.4;
-                        a.vz += relDot * nz * 0.4;
-                        b.vx -= relDot * nx * 0.4;
-                        b.vz -= relDot * nz * 0.4;
+                    // Velocity exchange (only on first iteration)
+                    if (iter === 0) {
+                        var relVx = b.vx - a.vx;
+                        var relVz = b.vz - a.vz;
+                        var relDot = relVx * nx + relVz * nz;
+                        if (relDot < 0) {
+                            a.vx += relDot * nx * 0.4;
+                            a.vz += relDot * nz * 0.4;
+                            b.vx -= relDot * nx * 0.4;
+                            b.vz -= relDot * nz * 0.4;
+                        }
+                        a.speed *= 0.95;
+                        b.speed *= 0.95;
                     }
-
-                    // Mild speed penalty (avoid cascading slowdown in packs)
-                    a.speed *= 0.92;
-                    b.speed *= 0.92;
 
                     a._updateMesh();
                     b._updateMesh();
