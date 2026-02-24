@@ -134,7 +134,7 @@
         scene = new THREE.Scene();
         var isDark = document.body.classList.contains('dark');
         scene.background = new THREE.Color(isDark ? 0x2a4020 : 0x4a7a2e);
-        scene.fog = new THREE.FogExp2(scene.background, 0.004);
+        scene.fog = new THREE.FogExp2(scene.background, 0.002);
 
         renderer = new THREE.WebGLRenderer({ antialias: true });
         var cw = gameContainer.clientWidth || window.innerWidth;
@@ -149,7 +149,7 @@
             50,
             cw / ch,
             0.1,
-            500
+            800
         );
         camera.position.set(0, cfg.cameraHeight, 0);
         camera.lookAt(0, 0, 0);
@@ -165,12 +165,12 @@
         sun.castShadow = true;
         sun.shadow.mapSize.width = 1024;
         sun.shadow.mapSize.height = 1024;
-        sun.shadow.camera.left = -80;
-        sun.shadow.camera.right = 80;
-        sun.shadow.camera.top = 80;
-        sun.shadow.camera.bottom = -80;
+        sun.shadow.camera.left = -150;
+        sun.shadow.camera.right = 150;
+        sun.shadow.camera.top = 150;
+        sun.shadow.camera.bottom = -150;
         sun.shadow.camera.near = 1;
-        sun.shadow.camera.far = 150;
+        sun.shadow.camera.far = 250;
         scene.add(sun);
 
         var hemi = new THREE.HemisphereLight(0x87ceeb, 0x3a7d0a, 0.3);
@@ -292,7 +292,7 @@
     }
 
     function setCameraOverview() {
-        camera.position.set(0, 90, 30);
+        camera.position.set(0, 140, 30);
         camera.lookAt(0, 0, 0);
     }
 
@@ -539,13 +539,16 @@
     // ===== Checkpoint / Lap tracking =====
     function updateCheckpoints(car) {
         var cps = TRACK.checkpoints;
-        var cp = cps[car.nextCheckpoint];
 
-        if (TRACK.crossedCheckpoint(cp, car.prevX, car.prevZ, car.x, car.z)) {
+        // Check up to 3 checkpoints per frame to handle fast movement
+        // (Catmull-Rom t isn't arc-length uniform, so adjacent checkpoints
+        //  can be physically close and a fast car can cross multiple per frame)
+        for (var attempt = 0; attempt < 3; attempt++) {
+            var cp = cps[car.nextCheckpoint];
+            if (!TRACK.crossedCheckpoint(cp, car.prevX, car.prevZ, car.x, car.z)) break;
+
             car.nextCheckpoint++;
-
             if (car.nextCheckpoint >= cps.length) {
-                // Completed a lap when crossing checkpoint 0 (start/finish)
                 car.nextCheckpoint = 0;
             }
 
@@ -594,7 +597,7 @@
 
     // ===== Car-to-car collision =====
     function resolveCollisions() {
-        var collisionRadius = 2.5;
+        var collisionRadius = 3.8; // car body is 2.2 x 4.2, this covers most overlap
         for (var i = 0; i < allCars.length; i++) {
             if (allCars[i].parked) continue;
             for (var j = i + 1; j < allCars.length; j++) {
@@ -609,17 +612,30 @@
                     var overlap = collisionRadius - dist;
                     var nx = dx / dist;
                     var nz = dz / dist;
-                    var pushX = nx * overlap * 0.5;
-                    var pushZ = nz * overlap * 0.5;
+                    // Push apart by full overlap (each car moves half)
+                    var pushX = nx * overlap * 0.6;
+                    var pushZ = nz * overlap * 0.6;
 
                     a.x -= pushX;
                     a.z -= pushZ;
                     b.x += pushX;
                     b.z += pushZ;
 
-                    // Reduce speeds slightly
-                    a.speed *= 0.9;
-                    b.speed *= 0.9;
+                    // Velocity exchange along collision normal
+                    var relVx = b.vx - a.vx;
+                    var relVz = b.vz - a.vz;
+                    var relDot = relVx * nx + relVz * nz;
+                    if (relDot < 0) {
+                        // Cars approaching — exchange velocity along normal
+                        a.vx += relDot * nx * 0.5;
+                        a.vz += relDot * nz * 0.5;
+                        b.vx -= relDot * nx * 0.5;
+                        b.vz -= relDot * nz * 0.5;
+                    }
+
+                    // Strong speed penalty
+                    a.speed *= 0.7;
+                    b.speed *= 0.7;
 
                     a._updateMesh();
                     b._updateMesh();
@@ -631,14 +647,16 @@
     // ===== Autopilot to parking =====
     function autopilotToParking(car, dt) {
         var spot = parkingSpots[car.parkingIndex];
-        if (!spot) return;
+        if (!spot) { car.parked = true; return; }
 
         var dx = spot.x - car.x;
         var dz = spot.z - car.z;
         var dist = Math.sqrt(dx * dx + dz * dz);
 
-        if (dist < 2) {
+        if (dist < 1) {
             // Arrived at parking spot
+            car.x = spot.x;
+            car.z = spot.z;
             car.speed = 0;
             car.vx = 0;
             car.vz = 0;
@@ -647,20 +665,23 @@
             return;
         }
 
-        // Steer toward parking spot
+        // Direct movement — bypass physics (no drift overshoot)
+        var moveSpeed = Math.min(0.5, dist * 0.3);
+        var s = dt * 60;
+        car.x += (dx / dist) * moveSpeed * s;
+        car.z += (dz / dist) * moveSpeed * s;
+
+        // Smoothly rotate to face target
         var targetAngle = Math.atan2(dx, dz);
         var angleDiff = targetAngle - car.angle;
         while (angleDiff > Math.PI) angleDiff -= 2 * Math.PI;
         while (angleDiff < -Math.PI) angleDiff += 2 * Math.PI;
+        car.angle += angleDiff * 0.1;
 
-        // Limit parking speed to gentle pace
-        var parkSpeed = 0.6;
-        car.input.steerLeft = angleDiff > 0.08;
-        car.input.steerRight = angleDiff < -0.08;
-        car.input.accelerate = car.speed < parkSpeed && dist > 3;
-        car.input.brake = car.speed > parkSpeed || dist < 5;
-
-        car.update(dt);
+        car.speed = moveSpeed;
+        car.vx = 0;
+        car.vz = 0;
+        car._updateMesh();
     }
 
     // ===== Game Loop =====
@@ -706,7 +727,7 @@
 
             // Show results when player finishes AND is parked (or after short delay)
             if (playerCar.finished && !state.resultsShown) {
-                if (playerCar.parked || (state.raceElapsed - playerCar.finishTime > 4)) {
+                if (playerCar.parked || (state.raceElapsed - playerCar.finishTime > 2)) {
                     state.resultsShown = true;
                     state.screen = 'results';
                     showResults();

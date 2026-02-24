@@ -1,28 +1,28 @@
 var TRACK = (function () {
     'use strict';
 
-    // Circuit control points [x, y(up), z] - closed loop
+    // Circuit control points [x, y(up), z] - closed loop, large smooth circuit
     var controlPoints = [
-        new THREE.Vector3(0, 0, -50),
-        new THREE.Vector3(35, 0, -45),
-        new THREE.Vector3(55, 0, -25),
-        new THREE.Vector3(60, 0, 5),
-        new THREE.Vector3(50, 0, 30),
-        new THREE.Vector3(25, 0, 45),
-        new THREE.Vector3(0, 0, 35),
-        new THREE.Vector3(-20, 0, 20),
-        new THREE.Vector3(-45, 0, 25),
-        new THREE.Vector3(-60, 0, 5),
-        new THREE.Vector3(-55, 0, -20),
-        new THREE.Vector3(-35, 0, -40),
-        new THREE.Vector3(-10, 0, -52)
+        new THREE.Vector3(0, 0, -90),        // Start/finish straight
+        new THREE.Vector3(55, 0, -85),       // Gentle right
+        new THREE.Vector3(95, 0, -55),       // Turn 1 entry
+        new THREE.Vector3(110, 0, -5),       // Turn 1 exit (wide sweeper)
+        new THREE.Vector3(90, 0, 45),        // Back straight entry
+        new THREE.Vector3(45, 0, 80),        // Turn 2 (fast left)
+        new THREE.Vector3(-10, 0, 75),       // Short straight
+        new THREE.Vector3(-50, 0, 55),       // Chicane entry
+        new THREE.Vector3(-75, 0, 25),       // Chicane exit
+        new THREE.Vector3(-105, 0, -10),     // Hairpin entry
+        new THREE.Vector3(-95, 0, -50),      // Hairpin apex
+        new THREE.Vector3(-60, 0, -75),      // Back straight
+        new THREE.Vector3(-20, 0, -92)       // Approaching finish
     ];
 
     var trackWidth = DATA.config.trackWidth;
     var splineResolution = 300;
 
     // Create the closed catmull-rom spline
-    var curve = new THREE.CatmullRomCurve3(controlPoints, true, 'catmullrom', 0.5);
+    var curve = new THREE.CatmullRomCurve3(controlPoints, true, 'catmullrom', 0.3);
 
     // Get pre-computed spline points
     var splinePoints = curve.getPoints(splineResolution);
@@ -70,7 +70,7 @@ var TRACK = (function () {
     // Create track meshes and add to scene
     function createTrackMesh(scene) {
         // Ground plane
-        var groundGeo = new THREE.PlaneGeometry(400, 400);
+        var groundGeo = new THREE.PlaneGeometry(600, 600);
         var groundMat = new THREE.MeshStandardMaterial({
             color: 0x4a7a2e,
             roughness: 0.9,
@@ -337,7 +337,7 @@ var TRACK = (function () {
 
         for (var i = 0; i < 40; i++) {
             var angle = Math.random() * Math.PI * 2;
-            var dist = 90 + Math.random() * 60;
+            var dist = 150 + Math.random() * 80;
             var x = Math.cos(angle) * dist;
             var z = Math.sin(angle) * dist;
 
@@ -368,9 +368,9 @@ var TRACK = (function () {
             mat
         );
         stand.position.set(
-            p.x + n.x * (trackWidth + 15),
+            p.x + n.x * (trackWidth + 20),
             2,
-            p.z + n.z * (trackWidth + 15)
+            p.z + n.z * (trackWidth + 20)
         );
         stand.castShadow = true;
         stand.receiveShadow = true;
@@ -386,7 +386,7 @@ var TRACK = (function () {
     }
 
     // Checkpoints - evenly spaced along the track
-    var numCheckpoints = 10;
+    var numCheckpoints = 20;
     var checkpoints = [];
 
     function generateCheckpoints() {
@@ -440,8 +440,8 @@ var TRACK = (function () {
             var row = Math.floor(i / 2);
             var col = (i % 2 === 0) ? -1 : 1;
             positions.push({
-                x: p.x - tangent.x * (row * 6 + 3) + normal.x * col * 5,
-                z: p.z - tangent.z * (row * 6 + 3) + normal.z * col * 5,
+                x: p.x - tangent.x * (row * 8 + 4) + normal.x * col * 6,
+                z: p.z - tangent.z * (row * 8 + 4) + normal.z * col * 6,
                 angle: angle
             });
         }

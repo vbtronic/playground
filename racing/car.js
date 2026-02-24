@@ -179,18 +179,21 @@ var Car = (function () {
         this.x += this.vx * s;
         this.z += this.vz * s;
 
-        // Track barrier - bounce off wall if car goes off track
+        // Track barrier - bounce off wall at the visual barrier position
         // Skip barrier for finished cars (they autopilot off-track to parking)
-        this.onTrack = TRACK.isOnTrack(this.x, this.z);
-        if (!this.onTrack && !this.finished) {
-            var nearT = TRACK.getNearestT(this.x, this.z);
-            var center = TRACK.getPointAtT(nearT);
-            var edgeDx = this.x - center.x;
-            var edgeDz = this.z - center.z;
-            var edgeDist = Math.sqrt(edgeDx * edgeDx + edgeDz * edgeDz);
+        var nearT = TRACK.getNearestT(this.x, this.z);
+        var center = TRACK.getPointAtT(nearT);
+        var edgeDx = this.x - center.x;
+        var edgeDz = this.z - center.z;
+        var edgeDist = Math.sqrt(edgeDx * edgeDx + edgeDz * edgeDz);
+        this.onTrack = edgeDist <= TRACK.trackWidth;
+
+        // Barrier at curb outer edge (wall is at trackWidth + 1.5)
+        var barrierDist = TRACK.trackWidth + 1.2;
+        if (edgeDist > barrierDist && !this.finished) {
             if (edgeDist > 0.1) {
-                // Push back INSIDE the track
-                var pushDist = TRACK.trackWidth * 0.93;
+                // Push back just inside the barrier
+                var pushDist = TRACK.trackWidth + 0.8;
                 this.x = center.x + (edgeDx / edgeDist) * pushDist;
                 this.z = center.z + (edgeDz / edgeDist) * pushDist;
 
