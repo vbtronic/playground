@@ -554,9 +554,13 @@
 
             if (car.nextCheckpoint === 1) {
                 // Just crossed the start/finish line
+                // Safety: ignore if lap took less than 5 seconds (false detection)
+                var lapTime = state.raceElapsed - car.lapStartTime;
+                if (car.lapStartTime > 0 && lapTime < 5) break;
+
                 car.lap++;
                 if (car.lap > 0 && car.lapStartTime > 0) {
-                    car.lapTimes.push(state.raceElapsed - car.lapStartTime);
+                    car.lapTimes.push(lapTime);
                 }
                 car.lapStartTime = state.raceElapsed;
 
@@ -573,7 +577,7 @@
         if (car.nextCheckpoint > cps.length / 2 && trackT < 0.25) {
             trackT += 1.0;
         }
-        if (car.nextCheckpoint <= 1 && trackT > 0.75) {
+        if (car.nextCheckpoint === 1 && trackT > 0.75) {
             trackT -= 1.0;
         }
         car.raceProgress = car.lap + trackT;
@@ -582,6 +586,10 @@
     // ===== Position tracking =====
     function getPositions() {
         var sorted = allCars.slice().sort(function (a, b) {
+            // Finished cars always rank above non-finished
+            if (a.finished && b.finished) return a.finishTime - b.finishTime;
+            if (a.finished) return -1;
+            if (b.finished) return 1;
             return b.raceProgress - a.raceProgress;
         });
         return sorted;

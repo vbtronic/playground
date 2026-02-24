@@ -395,16 +395,19 @@ var TRACK = (function () {
             var t = i / numCheckpoints;
             var p = curve.getPoint(t);
             var n = getNormal(t);
+            var tan = getTangent(t);
             checkpoints.push({
                 t: t,
                 x: p.x,
                 z: p.z,
                 nx: n.x,
                 nz: n.z,
-                leftX: p.x + n.x * trackWidth * 1.5,
-                leftZ: p.z + n.z * trackWidth * 1.5,
-                rightX: p.x - n.x * trackWidth * 1.5,
-                rightZ: p.z - n.z * trackWidth * 1.5
+                tanX: tan.x,
+                tanZ: tan.z,
+                leftX: p.x + n.x * trackWidth * 1.1,
+                leftZ: p.z + n.z * trackWidth * 1.1,
+                rightX: p.x - n.x * trackWidth * 1.1,
+                rightZ: p.z - n.z * trackWidth * 1.1
             });
         }
         return checkpoints;
@@ -413,10 +416,16 @@ var TRACK = (function () {
     // Check if a car crossed a checkpoint line between two positions
     function crossedCheckpoint(cp, prevX, prevZ, curX, curZ) {
         // Line segment intersection test
-        return segmentsIntersect(
+        if (!segmentsIntersect(
             prevX, prevZ, curX, curZ,
             cp.leftX, cp.leftZ, cp.rightX, cp.rightZ
-        );
+        )) return false;
+
+        // Direction check: car must be moving forward through the gate
+        var dx = curX - prevX;
+        var dz = curZ - prevZ;
+        var dot = dx * cp.tanX + dz * cp.tanZ;
+        return dot > 0;
     }
 
     function segmentsIntersect(ax, ay, bx, by, cx, cy, dx, dy) {
