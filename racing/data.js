@@ -46,8 +46,8 @@ var DATA = {
         aiSpeedHard: 0.99,
         aiWander: 0.15,
 
-        cameraHeight: 120,
-        cameraLookAhead: 8,
+        cameraHeight: 55,
+        cameraLookAhead: 12,
 
         trackWidth: 22,
 

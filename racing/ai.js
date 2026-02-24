@@ -6,7 +6,7 @@ var AI = (function () {
     function AIDriver(car, difficulty) {
         this.car = car;
         this.difficulty = difficulty || 'medium';
-        this.lookAhead = 0.04;
+        this.lookAhead = 0.06;
         this.wanderOffset = 0;
         this.wanderTimer = 0;
         this.stuckTimer = 0;
@@ -64,18 +64,18 @@ var AI = (function () {
         car.input.steerRight = angleDiff < -steerThreshold;
 
         // Speed control - brake for sharp curves
-        var aheadT = (currentT + this.lookAhead * 3) % 1;
+        var aheadT = (currentT + this.lookAhead * 2.5) % 1;
         var tan1 = TRACK.getTangent(currentT);
         var tan2 = TRACK.getTangent(aheadT);
         var curvature = 1 - (tan1.x * tan2.x + tan1.z * tan2.z); // 0 = straight, ~2 = U-turn
 
         var desiredSpeed = this.targetSpeed;
-        if (curvature > 0.05) {
-            desiredSpeed *= Math.max(0.4, 1 - curvature * 3);
+        if (curvature > 0.08) {
+            desiredSpeed *= Math.max(0.55, 1 - curvature * 2);
         }
 
         car.input.accelerate = car.speed < desiredSpeed;
-        car.input.brake = car.speed > desiredSpeed * 1.2;
+        car.input.brake = car.speed > desiredSpeed * 1.15;
 
         // Stuck detection
         if (Math.abs(car.speed) < 0.02) {

@@ -597,7 +597,7 @@
 
     // ===== Car-to-car collision =====
     function resolveCollisions() {
-        var collisionRadius = 3.8; // car body is 2.2 x 4.2, this covers most overlap
+        var collisionRadius = 3.5; // car body is 2.2 x 4.2
         for (var i = 0; i < allCars.length; i++) {
             if (allCars[i].parked) continue;
             for (var j = i + 1; j < allCars.length; j++) {
@@ -612,9 +612,9 @@
                     var overlap = collisionRadius - dist;
                     var nx = dx / dist;
                     var nz = dz / dist;
-                    // Push apart by full overlap (each car moves half)
-                    var pushX = nx * overlap * 0.6;
-                    var pushZ = nz * overlap * 0.6;
+                    // Push apart firmly
+                    var pushX = nx * overlap * 0.7;
+                    var pushZ = nz * overlap * 0.7;
 
                     a.x -= pushX;
                     a.z -= pushZ;
@@ -626,16 +626,15 @@
                     var relVz = b.vz - a.vz;
                     var relDot = relVx * nx + relVz * nz;
                     if (relDot < 0) {
-                        // Cars approaching — exchange velocity along normal
-                        a.vx += relDot * nx * 0.5;
-                        a.vz += relDot * nz * 0.5;
-                        b.vx -= relDot * nx * 0.5;
-                        b.vz -= relDot * nz * 0.5;
+                        a.vx += relDot * nx * 0.4;
+                        a.vz += relDot * nz * 0.4;
+                        b.vx -= relDot * nx * 0.4;
+                        b.vz -= relDot * nz * 0.4;
                     }
 
-                    // Strong speed penalty
-                    a.speed *= 0.7;
-                    b.speed *= 0.7;
+                    // Mild speed penalty (avoid cascading slowdown in packs)
+                    a.speed *= 0.92;
+                    b.speed *= 0.92;
 
                     a._updateMesh();
                     b._updateMesh();
