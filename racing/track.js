@@ -415,17 +415,10 @@ var TRACK = (function () {
 
     // Check if a car crossed a checkpoint line between two positions
     function crossedCheckpoint(cp, prevX, prevZ, curX, curZ) {
-        // Line segment intersection test
-        if (!segmentsIntersect(
+        return segmentsIntersect(
             prevX, prevZ, curX, curZ,
             cp.leftX, cp.leftZ, cp.rightX, cp.rightZ
-        )) return false;
-
-        // Direction check: car must be moving forward through the gate
-        var dx = curX - prevX;
-        var dz = curZ - prevZ;
-        var dot = dx * cp.tanX + dz * cp.tanZ;
-        return dot > 0;
+        );
     }
 
     function segmentsIntersect(ax, ay, bx, by, cx, cy, dx, dy) {
