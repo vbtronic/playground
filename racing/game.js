@@ -541,8 +541,6 @@
         var cps = TRACK.checkpoints;
 
         // Check up to 3 checkpoints per frame to handle fast movement
-        // (Catmull-Rom t isn't arc-length uniform, so adjacent checkpoints
-        //  can be physically close and a fast car can cross multiple per frame)
         for (var attempt = 0; attempt < 3; attempt++) {
             var cp = cps[car.nextCheckpoint];
             if (!TRACK.crossedCheckpoint(cp, car.prevX, car.prevZ, car.x, car.z)) break;
@@ -554,11 +552,8 @@
 
             if (car.nextCheckpoint === 1) {
                 // Just crossed the start/finish line
-                // Safety: ignore if lap took less than 5 seconds (false detection)
-                var lapTime = state.raceElapsed - car.lapStartTime;
-                if (car.lapStartTime > 0 && lapTime < 5) break;
-
                 car.lap++;
+                var lapTime = state.raceElapsed - car.lapStartTime;
                 if (car.lap > 0 && car.lapStartTime > 0) {
                     car.lapTimes.push(lapTime);
                 }
@@ -571,16 +566,11 @@
             }
         }
 
-        // Precise race progress using actual track position
-        var trackT = TRACK.getNearestT(car.x, car.z);
-        // Handle wrap-around near start/finish line
-        if (car.nextCheckpoint > cps.length / 2 && trackT < 0.25) {
-            trackT += 1.0;
-        }
-        if (car.nextCheckpoint === 1 && trackT > 0.75) {
-            trackT -= 1.0;
-        }
-        car.raceProgress = car.lap + trackT;
+        // Race progress based on checkpoints (no getNearestT ambiguity)
+        var cpProgress = car.nextCheckpoint / cps.length;
+        // When nextCheckpoint=0, car passed all checkpoints and is near finish
+        if (car.nextCheckpoint === 0) cpProgress = 1.0;
+        car.raceProgress = car.lap + cpProgress;
     }
 
     // ===== Position tracking =====
@@ -739,10 +729,8 @@
                 }
             }
 
-            // Collisions (skip parked cars)
-            resolveCollisions();
-
-            // Checkpoints (only for non-finished cars)
+            // Checkpoints BEFORE collisions (collision pushback must not
+            // affect checkpoint detection — prevX/prevZ would be stale)
             for (var j = 0; j < allCars.length; j++) {
                 if (!allCars[j].finished) {
                     updateCheckpoints(allCars[j]);
@@ -753,6 +741,9 @@
                     finishedCount++;
                 }
             }
+
+            // Collisions (skip parked cars)
+            resolveCollisions();
 
             // Show results when player finishes AND is parked (or after short delay)
             if (playerCar.finished && !state.resultsShown) {
