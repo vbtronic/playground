@@ -404,34 +404,29 @@ var TRACK = (function () {
                 nz: n.z,
                 tanX: tan.x,
                 tanZ: tan.z,
-                leftX: p.x + n.x * trackWidth * 1.1,
-                leftZ: p.z + n.z * trackWidth * 1.1,
-                rightX: p.x - n.x * trackWidth * 1.1,
-                rightZ: p.z - n.z * trackWidth * 1.1
+                leftX: p.x + n.x * trackWidth * 1.5,
+                leftZ: p.z + n.z * trackWidth * 1.5,
+                rightX: p.x - n.x * trackWidth * 1.5,
+                rightZ: p.z - n.z * trackWidth * 1.5
             });
         }
         return checkpoints;
     }
 
-    // Check if a car crossed a checkpoint between two positions.
-    // Uses signed distance along the track tangent — much more robust
-    // than segment intersection (never misses due to angle/drift).
+    // Check if a car crossed a checkpoint gate between two positions
     function crossedCheckpoint(cp, prevX, prevZ, curX, curZ) {
-        // Signed distance along track tangent from checkpoint center
-        var prevDot = (prevX - cp.x) * cp.tanX + (prevZ - cp.z) * cp.tanZ;
-        var curDot = (curX - cp.x) * cp.tanX + (curZ - cp.z) * cp.tanZ;
+        return segmentsIntersect(
+            prevX, prevZ, curX, curZ,
+            cp.leftX, cp.leftZ, cp.rightX, cp.rightZ
+        );
+    }
 
-        // Car must move from before (negative) to after (positive)
-        if (prevDot >= 0 || curDot < 0) return false;
-
-        // Interpolate crossing point and check distance from checkpoint center
-        var frac = -prevDot / (curDot - prevDot);
-        var crossX = prevX + (curX - prevX) * frac;
-        var crossZ = prevZ + (curZ - prevZ) * frac;
-        var dx = crossX - cp.x;
-        var dz = crossZ - cp.z;
-        var maxDist = trackWidth * 1.5;
-        return (dx * dx + dz * dz) < maxDist * maxDist;
+    function segmentsIntersect(ax, ay, bx, by, cx, cy, dx, dy) {
+        var denom = (bx - ax) * (dy - cy) - (by - ay) * (dx - cx);
+        if (Math.abs(denom) < 1e-10) return false;
+        var t = ((cx - ax) * (dy - cy) - (cy - ay) * (dx - cx)) / denom;
+        var u = ((cx - ax) * (by - ay) - (cy - ay) * (bx - ax)) / denom;
+        return t >= 0 && t <= 1 && u >= 0 && u <= 1;
     }
 
     // Get starting grid positions

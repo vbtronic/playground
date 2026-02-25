@@ -729,20 +729,26 @@
                 }
             }
 
-            // Checkpoints BEFORE collisions (collision pushback must not
-            // affect checkpoint detection — prevX/prevZ would be stale)
+            // Checkpoints BEFORE barriers (car.update only does physics,
+            // prevX/prevZ → x/z is the true movement without barrier pushback)
             for (var j = 0; j < allCars.length; j++) {
                 if (!allCars[j].finished) {
                     updateCheckpoints(allCars[j]);
                 }
-                // Assign parking spot when car finishes
                 if (allCars[j].finished && allCars[j].parkingIndex === undefined) {
                     allCars[j].parkingIndex = finishedCount;
                     finishedCount++;
                 }
             }
 
-            // Collisions (skip parked cars)
+            // Barriers (after checkpoints, so pushback doesn't hide crossings)
+            for (var b = 0; b < allCars.length; b++) {
+                if (!allCars[b].finished && !allCars[b].parked) {
+                    allCars[b].applyBarrier();
+                }
+            }
+
+            // Collisions (skip finished/parked cars)
             resolveCollisions();
 
             // Show results when player finishes AND is parked (or after short delay)

@@ -171,7 +171,7 @@ var Car = (function () {
         this.vx = this.vx * (1 - blend) + forwardVx * blend;
         this.vz = this.vz * (1 - blend) + forwardVz * blend;
 
-        // Store previous position
+        // Store previous position (for checkpoint detection)
         this.prevX = this.x;
         this.prevZ = this.z;
 
@@ -179,8 +179,13 @@ var Car = (function () {
         this.x += this.vx * s;
         this.z += this.vz * s;
 
-        // Track barrier - bounce off wall at the visual barrier position
-        // Skip barrier for finished cars (they autopilot off-track to parking)
+        // Update mesh (barrier is applied separately AFTER checkpoints)
+        this._updateMesh();
+    };
+
+    CarObj.prototype.applyBarrier = function () {
+        if (this.finished) return;
+
         var nearT = TRACK.getNearestT(this.x, this.z);
         var center = TRACK.getPointAtT(nearT);
         var edgeDx = this.x - center.x;
@@ -188,34 +193,26 @@ var Car = (function () {
         var edgeDist = Math.sqrt(edgeDx * edgeDx + edgeDz * edgeDz);
         this.onTrack = edgeDist <= TRACK.trackWidth;
 
-        // Barrier at visual wall position (trackWidth + 1.5)
         var barrierDist = TRACK.trackWidth + 1.5;
-        if (edgeDist > barrierDist && !this.finished) {
-            if (edgeDist > 0.1) {
-                // Push back to just inside the visual wall
-                var pushDist = TRACK.trackWidth + 1.3;
-                this.x = center.x + (edgeDx / edgeDist) * pushDist;
-                this.z = center.z + (edgeDz / edgeDist) * pushDist;
+        if (edgeDist > barrierDist && edgeDist > 0.1) {
+            var pushDist = TRACK.trackWidth + 1.3;
+            this.x = center.x + (edgeDx / edgeDist) * pushDist;
+            this.z = center.z + (edgeDz / edgeDist) * pushDist;
 
-                // Reflect velocity off the wall normal
-                var wallNx = edgeDx / edgeDist;
-                var wallNz = edgeDz / edgeDist;
-                var dot = this.vx * wallNx + this.vz * wallNz;
-                if (dot > 0) {
-                    this.vx -= 1.3 * dot * wallNx;
-                    this.vz -= 1.3 * dot * wallNz;
-                    var impactSpeed = Math.abs(dot);
-                    var energyLoss = Math.min(0.4, 0.1 + impactSpeed * 0.3);
-                    this.speed *= (1 - energyLoss);
-                } else {
-                    // Sliding along wall
-                    this.speed *= 0.95;
-                }
+            var wallNx = edgeDx / edgeDist;
+            var wallNz = edgeDz / edgeDist;
+            var dot = this.vx * wallNx + this.vz * wallNz;
+            if (dot > 0) {
+                this.vx -= 1.3 * dot * wallNx;
+                this.vz -= 1.3 * dot * wallNz;
+                var impactSpeed = Math.abs(dot);
+                var energyLoss = Math.min(0.4, 0.1 + impactSpeed * 0.3);
+                this.speed *= (1 - energyLoss);
+            } else {
+                this.speed *= 0.95;
             }
+            this._updateMesh();
         }
-
-        // Update mesh
-        this._updateMesh();
     };
 
     CarObj.prototype.getDisplaySpeed = function () {
