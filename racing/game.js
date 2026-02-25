@@ -601,9 +601,9 @@
         // Run 2 iterations for better separation
         for (var iter = 0; iter < 2; iter++) {
             for (var i = 0; i < allCars.length; i++) {
-                if (allCars[i].parked) continue;
+                if (allCars[i].parked || allCars[i].finished) continue;
                 for (var j = i + 1; j < allCars.length; j++) {
-                    if (allCars[j].parked) continue;
+                    if (allCars[j].parked || allCars[j].finished) continue;
                     var a = allCars[i];
                     var b = allCars[j];
                     var dx = b.x - a.x;
@@ -685,7 +685,7 @@
         }
 
         // Direct movement — bypass physics (no drift overshoot)
-        var moveSpeed = Math.min(0.5, dist * 0.3);
+        var moveSpeed = Math.min(1.5, dist * 0.3);
         var s = dt * 60;
         car.x += (dx / dist) * moveSpeed * s;
         car.z += (dz / dist) * moveSpeed * s;
