@@ -188,12 +188,12 @@ var Car = (function () {
         var edgeDist = Math.sqrt(edgeDx * edgeDx + edgeDz * edgeDz);
         this.onTrack = edgeDist <= TRACK.trackWidth;
 
-        // Barrier at curb outer edge (wall is at trackWidth + 1.5)
-        var barrierDist = TRACK.trackWidth + 1.2;
+        // Barrier at visual wall position (trackWidth + 1.5)
+        var barrierDist = TRACK.trackWidth + 1.5;
         if (edgeDist > barrierDist && !this.finished) {
             if (edgeDist > 0.1) {
-                // Push back just inside the barrier
-                var pushDist = TRACK.trackWidth + 0.8;
+                // Push back to just inside the visual wall
+                var pushDist = TRACK.trackWidth + 1.3;
                 this.x = center.x + (edgeDx / edgeDist) * pushDist;
                 this.z = center.z + (edgeDz / edgeDist) * pushDist;
 
@@ -202,18 +202,14 @@ var Car = (function () {
                 var wallNz = edgeDz / edgeDist;
                 var dot = this.vx * wallNx + this.vz * wallNz;
                 if (dot > 0) {
-                    // Bounce: reflect velocity component perpendicular to wall
-                    this.vx -= 1.6 * dot * wallNx;
-                    this.vz -= 1.6 * dot * wallNz;
-                    // Energy loss proportional to impact speed
+                    this.vx -= 1.3 * dot * wallNx;
+                    this.vz -= 1.3 * dot * wallNz;
                     var impactSpeed = Math.abs(dot);
-                    var energyLoss = Math.min(0.6, 0.15 + impactSpeed * 0.4);
+                    var energyLoss = Math.min(0.4, 0.1 + impactSpeed * 0.3);
                     this.speed *= (1 - energyLoss);
-                    this.vx *= (1 - energyLoss * 0.3);
-                    this.vz *= (1 - energyLoss * 0.3);
                 } else {
-                    // Sliding along wall, small friction
-                    this.speed *= 0.92;
+                    // Sliding along wall
+                    this.speed *= 0.95;
                 }
             }
         }

@@ -413,20 +413,25 @@ var TRACK = (function () {
         return checkpoints;
     }
 
-    // Check if a car crossed a checkpoint line between two positions
+    // Check if a car crossed a checkpoint between two positions.
+    // Uses signed distance along the track tangent — much more robust
+    // than segment intersection (never misses due to angle/drift).
     function crossedCheckpoint(cp, prevX, prevZ, curX, curZ) {
-        return segmentsIntersect(
-            prevX, prevZ, curX, curZ,
-            cp.leftX, cp.leftZ, cp.rightX, cp.rightZ
-        );
-    }
+        // Signed distance along track tangent from checkpoint center
+        var prevDot = (prevX - cp.x) * cp.tanX + (prevZ - cp.z) * cp.tanZ;
+        var curDot = (curX - cp.x) * cp.tanX + (curZ - cp.z) * cp.tanZ;
 
-    function segmentsIntersect(ax, ay, bx, by, cx, cy, dx, dy) {
-        var denom = (bx - ax) * (dy - cy) - (by - ay) * (dx - cx);
-        if (Math.abs(denom) < 1e-10) return false;
-        var t = ((cx - ax) * (dy - cy) - (cy - ay) * (dx - cx)) / denom;
-        var u = ((cx - ax) * (by - ay) - (cy - ay) * (bx - ax)) / denom;
-        return t >= 0 && t <= 1 && u >= 0 && u <= 1;
+        // Car must move from before (negative) to after (positive)
+        if (prevDot >= 0 || curDot < 0) return false;
+
+        // Interpolate crossing point and check distance from checkpoint center
+        var frac = -prevDot / (curDot - prevDot);
+        var crossX = prevX + (curX - prevX) * frac;
+        var crossZ = prevZ + (curZ - prevZ) * frac;
+        var dx = crossX - cp.x;
+        var dz = crossZ - cp.z;
+        var maxDist = trackWidth * 1.5;
+        return (dx * dx + dz * dz) < maxDist * maxDist;
     }
 
     // Get starting grid positions
