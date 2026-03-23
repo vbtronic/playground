@@ -1,0 +1,77 @@
+#game {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    background: linear-gradient(135deg, #0f0f23, #1a1a2e);
+    overflow: hidden;
+    padding-top: 20px;
+    border-radius: 15px;
+}
+
+#canvas {
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+}
+
+#instructions {
+    color: #ccc;
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 14px;
+    margin-top: 15px;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}
+
+/* Message Modal */
+.message-modal {
+    display: none;
+    position: fixed;
+    z-index: 2;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.7);
+}
+
+.message-modal-content {
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    color: #fff;
+    margin: 20% auto;
+    padding: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    width: 300px;
+    text-align: center;
+    border-radius: 15px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+.message-close {
+    color: #ccc;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.message-close:hover {
+    color: #fff;
+}
+
+#message-ok {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+#message-ok:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}

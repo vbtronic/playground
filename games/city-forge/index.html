@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" style="overflow: hidden;">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>City Forge</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body style="overflow: hidden;">
+    <div id="game">
+        <header class="top">
+            <h1>City Forge</h1>
+            <p>Gather materials, craft tools, and build a city your citizens rate.</p>
+        </header>
+
+        <section class="stats" id="stats-grid"></section>
+
+        <section class="controls">
+            <div class="action-group">
+                <h2>Materials</h2>
+                <button data-action="gather-wood">Gather Wood</button>
+                <button data-action="gather-stone">Gather Stone</button>
+                <button data-action="gather-metal">Gather Metal</button>
+            </div>
+
+            <div class="action-group">
+                <h2>Crafting</h2>
+                <button data-action="craft-planks">Craft Planks (2 Wood)</button>
+                <button data-action="craft-bricks">Craft Bricks (2 Stone)</button>
+                <button data-action="craft-tools">Craft Tools (2 Metal + 1 Wood)</button>
+            </div>
+
+            <div class="action-group">
+                <h2>Buildings</h2>
+                <button data-action="build-house">Build House (4 Planks + 2 Bricks + 1 Tool)</button>
+                <button data-action="build-workshop">Build Workshop (3 Planks + 3 Bricks + 2 Metal)</button>
+                <button data-action="build-park">Build Park (2 Wood + 1 Brick)</button>
+                <button data-action="build-clinic">Build Clinic (4 Bricks + 2 Tools)</button>
+            </div>
+        </section>
+
+        <section class="log-wrap">
+            <h2>City Events</h2>
+            <div id="event-log" class="event-log"></div>
+        </section>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

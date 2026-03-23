@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="cs" style="overflow: hidden;">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Space Invaders</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body style="overflow: hidden;">
+    <div id="game">
+        <canvas id="canvas" width="600" height="400"></canvas>
+        <div id="instructions">
+            <p>Ovládání: Šipečky pro pohyb, Mezerník pro střelbu</p>
+        </div>
+    </div>
+
+    <!-- Message Modal -->
+    <div id="message-modal" class="message-modal">
+        <div class="message-modal-content">
+            <span class="message-close">&times;</span>
+            <p id="message-text"></p>
+            <button id="message-ok">OK</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

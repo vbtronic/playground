@@ -375,11 +375,15 @@
     <main class="content">
         <h1>Playground</h1>
         <p class="subtitle" id="subtitle">A collection of small web apps.</p>
-        <p class="author">Author: Viktor Bruncl&iacute;k with Claude Code</p>
+        <p class="author">Author: Viktor Bruncl&iacute;k with Claude Code · <a href="https://vbtronic.com" target="_blank" rel="noopener noreferrer" style="color:inherit;">vbtronic.com</a></p>
 
         <ul class="app-list" id="app-list">
             <li><a class="app-card" href="political-calculator/" data-en="Political Calculator" data-cz="Politick&aacute; kalkula&ccaron;ka"><span class="app-card-label">Political Calculator</span><span class="arrow">&rarr;</span></a></li>
             <li><a class="app-card" href="racing/" data-en="Racing" data-cz="Z&aacute;vody"><span class="app-card-label">Racing</span><span class="arrow">&rarr;</span></a></li>
+            <li><a class="app-card" href="games/space-invaders/" data-en="Space Invaders" data-cz="Space Invaders"><span class="app-card-label">Space Invaders</span><span class="arrow">&rarr;</span></a></li>
+            <li><a class="app-card" href="games/vesmirna-mise/" data-en="Space Mission" data-cz="Vesmírná mise"><span class="app-card-label">Space Mission</span><span class="arrow">&rarr;</span></a></li>
+            <li><a class="app-card" href="games/racing-game/" data-en="Racing Game" data-cz="Racing Game"><span class="app-card-label">Racing Game</span><span class="arrow">&rarr;</span></a></li>
+            <li><a class="app-card" href="games/city-forge/" data-en="City Forge" data-cz="City Forge"><span class="app-card-label">City Forge</span><span class="arrow">&rarr;</span></a></li>
         </ul>
     </main>
 
@@ -441,14 +445,20 @@
         var langOpts = langPill.querySelectorAll('.lang-opt');
 
         var texts = {
-            subtitle: { en: 'A collection of small web apps.', cz: 'Sb\u00edrka mal\u00fdch webov\u00fdch aplikac\u00ed.' }
+            subtitle: { en: 'A collection of small web apps.', cz: 'Sb\u00edrka mal\u00fdch webov\u00fdch aplikac\u00ed.' },
+            labels: {
+                spaceMission: { en: 'Space Mission', cz: 'Vesm\u00edrn\u00e1 mise' }
+            }
         };
 
         function updateLang() {
             subtitle.textContent = texts.subtitle[lang];
             for (var i = 0; i < links.length; i++) {
                 var label = links[i].querySelector('.app-card-label');
-                if (label) label.textContent = links[i].getAttribute('data-' + lang);
+                if (label) {
+                    var translated = links[i].getAttribute('data-' + lang);
+                    label.textContent = translated || label.textContent;
+                }
             }
             for (var j = 0; j < langOpts.length; j++) {
                 if (langOpts[j].getAttribute('data-lang') === lang) {

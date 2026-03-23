@@ -1,0 +1,22 @@
+body {
+    margin: 0;
+}
+
+#game {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: radial-gradient(circle at 20% 15%, #263748, #0d141f 60%);
+    padding: 8px;
+    box-sizing: border-box;
+}
+
+#canvas {
+    border: 3px solid rgba(255, 255, 255, 0.35);
+    border-radius: 12px;
+    background: #16202c;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.45);
+}
