@@ -1,5 +1,10 @@
 const statsGrid = document.getElementById('stats-grid');
 const eventLog = document.getElementById('event-log');
+const cityPlan = document.getElementById('city-plan');
+
+const PLAN_COLS = 8;
+const PLAN_ROWS = 5;
+const cityLots = Array.from({ length: PLAN_COLS * PLAN_ROWS }, () => null);
 
 const state = {
     wood: 6,
@@ -45,6 +50,7 @@ document.addEventListener('keydown', (event) => {
 
 setInterval(cityTick, 6000);
 render();
+renderCityPlan();
 logEvent('City founded. Build smart and keep citizens happy.');
 
 function runAction(action) {
@@ -109,6 +115,7 @@ function runAction(action) {
         state.houses += 1;
         state.citizens += randomInt(2, 5);
         updateRating(5);
+        placeBuilding('house');
         logEvent('New house completed. Citizens moved in.');
     }
 
@@ -124,6 +131,7 @@ function runAction(action) {
         state.wood += 1;
         state.stone += 1;
         updateRating(4);
+        placeBuilding('workshop');
         logEvent('Workshop built. Daily production increased.');
     }
 
@@ -136,6 +144,7 @@ function runAction(action) {
         state.bricks -= 1;
         state.parks += 1;
         updateRating(6);
+        placeBuilding('park');
         logEvent('Park opened. Citizens are happier.');
     }
 
@@ -149,6 +158,7 @@ function runAction(action) {
         state.clinics += 1;
         state.citizens += 1;
         updateRating(7);
+        placeBuilding('clinic');
         logEvent('Clinic built. Health and trust improved.');
     }
 
@@ -192,6 +202,42 @@ function render() {
         card.innerHTML = `<span>${label}</span><strong>${state[key]}</strong>`;
         statsGrid.appendChild(card);
     });
+    renderCityPlan();
+}
+
+function placeBuilding(type) {
+    const freeIndex = cityLots.findIndex((lot) => lot === null);
+    if (freeIndex >= 0) {
+        cityLots[freeIndex] = type;
+        return;
+    }
+
+    const randomIndex = randomInt(0, cityLots.length - 1);
+    cityLots[randomIndex] = type;
+}
+
+function renderCityPlan() {
+    cityPlan.innerHTML = '';
+    cityLots.forEach((type) => {
+        const cell = document.createElement('div');
+        cell.className = 'plan-cell';
+
+        if (type) {
+            cell.classList.add(`type-${type}`);
+            cell.textContent = buildingShort(type);
+        } else {
+            cell.textContent = '·';
+        }
+
+        cityPlan.appendChild(cell);
+    });
+}
+
+function buildingShort(type) {
+    if (type === 'house') return 'H';
+    if (type === 'workshop') return 'W';
+    if (type === 'park') return 'P';
+    return 'C';
 }
 
 function updateRating(delta) {
