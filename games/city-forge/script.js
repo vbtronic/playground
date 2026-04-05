@@ -374,15 +374,13 @@ function updateButtons() {
         const action = button.dataset.action;
         if (state.over || state.won) {
             button.disabled = true;
+            button.classList.remove('is-blocked');
             return;
         }
 
-        if (action.startsWith('gather')) {
-            button.disabled = false;
-            return;
-        }
-
-        button.disabled = actionRules[action] ? !actionRules[action]() : false;
+        button.disabled = false;
+        const blocked = actionRules[action] ? !actionRules[action]() : false;
+        button.classList.toggle('is-blocked', blocked);
     });
 }
 

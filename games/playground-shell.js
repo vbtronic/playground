@@ -12,10 +12,12 @@
     var titleEl = document.getElementById('header-title');
     var frameEl = document.getElementById('app-frame');
     var resetBtn = document.getElementById('btn-reset');
+    var homeLink = document.querySelector('.home-link');
     var langOpts = document.querySelectorAll('.lang-opt');
     var themeToggle = document.getElementById('theme-toggle');
     var iconSun = themeToggle.querySelector('.icon-sun');
     var iconMoon = themeToggle.querySelector('.icon-moon');
+    var homePath = window.GAME_HOME_PATH || GAME_INFO.homePath || '../../';
 
     function t(value) {
         if (!value || typeof value === 'string') {
@@ -26,6 +28,9 @@
 
     function applyLang() {
         titleEl.textContent = t(GAME_INFO.title);
+        if (homeLink) {
+            homeLink.setAttribute('href', homePath);
+        }
         langOpts.forEach(function (opt) {
             if (opt.getAttribute('data-lang') === lang) {
                 opt.classList.add('active');
@@ -74,13 +79,13 @@
 
     window.addEventListener('message', function (event) {
         if (event.data && event.data.action === 'closeModal') {
-            window.location.href = '../';
+            window.location.href = homePath;
         }
     });
 
     window.addEventListener('keydown', function (event) {
         if (event.key === 'Escape') {
-            window.location.href = '../';
+            window.location.href = homePath;
         }
     });
 

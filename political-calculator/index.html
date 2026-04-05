@@ -11,12 +11,28 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css?v=2">
+    <link rel="stylesheet" href="../shared/menu.css">
 </head>
 <body>
     <script>
         (function() {
             var t = localStorage.getItem('theme') || 'light';
             if (t === 'dark') document.body.classList.add('dark');
+            window.GAME_LICENSE_TITLE = 'Political Calculator';
+            window.GAME_LICENSE_HOME_PATH = '../buy-ticket/';
+            window.GAME_LICENSE_BUY_PATH = '../buy-ticket/';
+            window.GAME_PREVIEW_PATH = '../preview/political-calculator/';
+            window.GAME_GATE_CONTAINER_SELECTOR = '#app';
+            window.PLAYGROUND_MENU_ROOT = '../';
+            window.PLAYGROUND_HELP = {
+                title: 'Political Calculator help',
+                subtitle: 'How the questionnaire and ranking output work.',
+                sections: [
+                    { heading: 'Goal', text: 'Choose a political spectrum, answer the questionnaire, and review the top matches at the end.' },
+                    { heading: 'How matching works', items: ['Each answered question is compared against party positions.', 'Skipping a question removes it from the match score.', 'The top three results are shown in descending order.'] },
+                    { heading: 'Reset', text: 'Use the restart button in the header to return to the welcome screen instantly.' }
+                ]
+            };
         })();
     </script>
     <header>
@@ -30,17 +46,17 @@
             </div>
             <button class="theme-toggle" id="theme-toggle" title="Toggle theme">
                 <span class="toggle-knob">
-                    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41m11.32-11.32l1.41-1.41"/>
-                    </svg>
-                    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:none">
-                        <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
-                    </svg>
+                    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41m11.32-11.32l1.41-1.41"></path></svg>
+                    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:none"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path></svg>
                 </span>
             </button>
         </div>
     </header>
     <div id="app"></div>
+    <script src="../playground-config.js"></script>
+    <script src="../shared/account.js"></script>
+    <script src="../shared/menu.js"></script>
+    <script src="../games/license-gate.js"></script>
     <script src="data.js?v=2"></script>
     <script src="app.js?v=2"></script>
 </body>

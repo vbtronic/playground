@@ -230,6 +230,10 @@ h1 {
 }
 
 .action-group button:hover { transform: translateY(-1px); }
+.action-group button.is-blocked {
+    opacity: 0.78;
+    filter: saturate(0.75);
+}
 .action-group button:disabled {
     opacity: 0.42;
     cursor: not-allowed;

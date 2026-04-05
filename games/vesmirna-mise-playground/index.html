@@ -1,57 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
-    <title>Space Mission</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../playground-shell.css">
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><title>Space Mission</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="../playground-shell.css"><link rel="stylesheet" href="../../shared/menu.css">
 </head>
 <body>
-    <header>
-        <a href="../" class="header-btn home-link" title="Playground">&#8592; Playground</a>
-        <h1 id="header-title">Space Mission</h1>
-        <div class="header-right">
-            <button class="header-btn" id="btn-reset" title="Restart">&#8634;</button>
-            <div class="lang-pill" id="lang-pill">
-                <button class="lang-opt active" data-lang="en">EN</button>
-                <button class="lang-opt" data-lang="cz">CZ</button>
-            </div>
-            <button class="theme-toggle" id="theme-toggle" title="Toggle theme">
-                <span class="toggle-knob">
-                    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="12" cy="12" r="4"></circle><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41m11.32-11.32l1.41-1.41"></path>
-                    </svg>
-                    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:none">
-                        <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
-                    </svg>
-                </span>
-            </button>
-        </div>
-    </header>
-
-    <div class="app-stage">
-        <iframe id="app-frame" class="app-frame" title="Space Mission" loading="eager"></iframe>
-    </div>
-
-    <script>
-        window.GAME_INFO = {
-            title: { en: 'Space Mission', cz: 'Vesmírná mise' },
-            path: '../vesmirna-mise/index.html',
-            requiresLicense: true
-        };
-        window.GAME_LICENSE_TITLE = 'Space Mission';
-        window.GAME_LICENSE_HOME_PATH = '../../index.html#buy-games';
-        window.GAME_LICENSE_BUY_PATH = '../../index.html#buy-games';
-        window.GAME_GATE_CONTAINER_SELECTOR = '.app-stage';
-    </script>
-    <script src="../../playground-config.js"></script>
-    <script src="../playground-shell.js"></script>
-    <script src="../license-gate.js"></script>
-</body>
-</html>
+<header><a href="../../" class="header-btn home-link" title="Playground">&#8592; Playground</a><h1 id="header-title">Space Mission</h1><div class="header-right"><button class="header-btn" id="btn-reset" title="Restart">&#8634;</button><div class="lang-pill" id="lang-pill"><button class="lang-opt active" data-lang="en">EN</button><button class="lang-opt" data-lang="cz">CZ</button></div><button class="theme-toggle" id="theme-toggle" title="Toggle theme"><span class="toggle-knob"><svg class="icon-sun" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41m11.32-11.32l1.41-1.41"></path></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:none"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path></svg></span></button></div></header>
+<div class="app-stage"><iframe id="app-frame" class="app-frame" title="Space Mission" loading="eager"></iframe></div>
+<script>window.GAME_INFO={title:{en:'Space Mission',cz:'Vesmírná mise'},path:'../vesmirna-mise/index.html',requiresLicense:true};window.GAME_LICENSE_TITLE='Space Mission';window.GAME_LICENSE_HOME_PATH='../../buy-ticket/';window.GAME_LICENSE_BUY_PATH='../../buy-ticket/';window.GAME_PREVIEW_PATH='../../preview/space-mission/';window.GAME_HOME_PATH='../../';window.GAME_GATE_CONTAINER_SELECTOR='.app-stage';window.PLAYGROUND_MENU_ROOT='../../';window.PLAYGROUND_HELP={title:'Space Mission help',subtitle:'Steer, pace the mission, and time the shield.',sections:[{heading:'Goal',text:'Stay alive long enough to survive the mission window while obstacles and solar pressure ramp up.'},{heading:'Controls',items:['Arrow Left / Right to steer.','Arrow Up / Down to control velocity.','Left Ctrl activates the shield once it is available.']},{heading:'Difficulty',text:'Higher modes trigger denser obstacles and earlier solar pressure.'}]};</script>
+<script src="../../playground-config.js"></script><script src="../../shared/account.js"></script><script src="../../shared/menu.js"></script><script src="../playground-shell.js"></script><script src="../license-gate.js"></script>
+</body></html>

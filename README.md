@@ -36,3 +36,7 @@ Open `http://localhost:8000/` and verify the landing page plus every linked app.
 ## Production Notes
 
 Deployment, custom-domain, private-repo, and payment-gateway guidance now lives in [DEPLOYMENT.md](DEPLOYMENT.md).
+
+## Auth And Payment Setup
+
+Environment and credential setup now lives in [ENV_SETUP.md](ENV_SETUP.md).

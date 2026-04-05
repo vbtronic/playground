@@ -77,3 +77,8 @@ Before going live:
 3. Test every game entry page on the final domain.
 4. Verify email links and the mailto contact form.
 5. If using a private repo plus custom server, disable or replace any GitHub Pages specific deployment assumptions.
+
+
+## Environment Values
+
+See [ENV_SETUP.md](ENV_SETUP.md) for the `.env` template, what each value means, and how to obtain the Google and Stripe credentials.
