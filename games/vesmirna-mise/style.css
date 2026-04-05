@@ -1,77 +1,169 @@
-#game {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+:root {
+    --bg: #eef2f8;
+    --text: #162033;
+    --text-2: #586376;
+    --panel: rgba(255, 255, 255, 0.88);
+    --panel-strong: rgba(255, 255, 255, 0.96);
+    --border: rgba(12, 24, 38, 0.08);
+    --shadow: 0 24px 56px rgba(17, 29, 46, 0.12);
+    --accent: #4568ee;
+    --accent-2: #6dc8ff;
+}
+
+body.dark {
+    --bg: #0e1117;
+    --text: #edf2ff;
+    --text-2: #9da8c1;
+    --panel: rgba(17, 22, 31, 0.86);
+    --panel-strong: rgba(18, 24, 34, 0.94);
+    --border: rgba(255, 255, 255, 0.08);
+    --shadow: 0 28px 60px rgba(0, 0, 0, 0.34);
+    --accent: #6e8ef7;
+    --accent-2: #77d8ff;
+}
+
+* { box-sizing: border-box; }
+
+html,
+body {
+    margin: 0;
+    width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, #0f0f23, #1a1a2e);
     overflow: hidden;
-    padding-top: 20px;
-    border-radius: 15px;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: radial-gradient(circle at top, rgba(69, 104, 238, 0.16), transparent 32%), var(--bg);
+    color: var(--text);
+}
+
+body {
+    padding: 14px;
+}
+
+.mission-shell {
+    height: 100%;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    gap: 12px;
+}
+
+.hud-row {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.hud-card {
+    padding: 12px 14px;
+    border-radius: 16px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+}
+
+.hud-card span {
+    display: block;
+    color: var(--text-2);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.hud-card strong {
+    display: block;
+    margin-top: 7px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+}
+
+.canvas-shell {
+    min-height: 0;
+    padding: 14px;
+    border-radius: 22px;
+    background: var(--panel-strong);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
 }
 
 #canvas {
-    border: 3px solid rgba(255, 255, 255, 0.3);
-    border-radius: 10px;
-    box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 16px;
+    border: 1px solid rgba(126, 152, 201, 0.14);
+    background: linear-gradient(180deg, #12325b, #050912);
 }
 
 #instructions {
-    color: #ccc;
-    font-family: 'Segoe UI', sans-serif;
-    font-size: 14px;
-    margin-top: 15px;
-    text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+    margin: 0;
+    padding: 0 4px;
+    color: var(--text-2);
+    font-size: 12px;
 }
 
-/* Message Modal */
 .message-modal {
     display: none;
     position: fixed;
-    z-index: 2;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.7);
+    inset: 0;
+    z-index: 30;
+    padding: 16px;
+    align-items: center;
+    justify-content: center;
+    background: rgba(7, 10, 18, 0.58);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+}
+
+.message-modal.is-open {
+    display: flex;
 }
 
 .message-modal-content {
-    background: linear-gradient(135deg, #1e3c72, #2a5298);
-    color: #fff;
-    margin: 20% auto;
-    padding: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    width: 300px;
-    text-align: center;
-    border-radius: 15px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    width: min(360px, 100%);
+    padding: 18px;
+    border-radius: 18px;
+    border: 1px solid var(--border);
+    background: var(--panel-strong);
+    box-shadow: var(--shadow);
 }
 
 .message-close {
-    color: #ccc;
-    float: right;
+    border: none;
+    background: transparent;
+    color: var(--text-2);
     font-size: 28px;
-    font-weight: bold;
+    line-height: 1;
+    float: right;
     cursor: pointer;
 }
 
-.message-close:hover {
-    color: #fff;
+#message-text {
+    margin: 10px 0 18px;
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.5;
 }
 
 #message-ok {
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    color: white;
+    min-height: 36px;
+    padding: 0 14px;
     border: none;
-    padding: 10px 20px;
-    border-radius: 25px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    color: white;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
     cursor: pointer;
-    font-size: 16px;
-    transition: all 0.3s ease;
 }
 
-#message-ok:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+@media (max-width: 780px) {
+    body { padding: 10px; }
+    .hud-row { grid-template-columns: 1fr; }
+    .canvas-shell { padding: 10px; }
+    #instructions { font-size: 11px; }
 }

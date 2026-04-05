@@ -1,24 +1,34 @@
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
-// Herní stav
+const SHIELD_INTERVAL = 12;
+const SHIELD_DURATION = 8;
+
+function syncTheme() {
+    const theme = localStorage.getItem('theme') || 'light';
+    document.body.classList.toggle('dark', theme === 'dark');
+}
+
+function resizeCanvas() {
+    const container = document.querySelector('.canvas-shell') || document.getElementById('game');
+    const availableWidth = Math.max(320, container.clientWidth - 28);
+    const availableHeight = Math.max(220, container.clientHeight - 28);
+    const scaleX = availableWidth / BASE_WIDTH;
+    const scaleY = availableHeight / BASE_HEIGHT;
+    const scale = Math.min(scaleX, scaleY);
+    canvas.style.width = `${BASE_WIDTH * scale}px`;
+    canvas.style.height = `${BASE_HEIGHT * scale}px`;
+}
+
+// Game state
 let gameRunning = true;
 
-// Nastavení velikosti canvas
 const BASE_WIDTH = 800;
 const BASE_HEIGHT = 600;
 canvas.width = BASE_WIDTH;
 canvas.height = BASE_HEIGHT;
-
-// Škálování pro responzivnost - zachovat aspect ratio
-const container = document.getElementById('game');
-const containerWidth = container.offsetWidth;
-const containerHeight = container.offsetHeight;
-const scaleX = containerWidth / BASE_WIDTH;
-const scaleY = containerHeight / BASE_HEIGHT;
-const scale = Math.min(scaleX, scaleY);
-canvas.style.width = `${BASE_WIDTH * scale}px`;
-canvas.style.height = `${BASE_HEIGHT * scale}px`;
+syncTheme();
+resizeCanvas();
 
 // Message modal
 const messageModal = document.getElementById('message-modal');
@@ -28,35 +38,48 @@ const messageOk = document.getElementById('message-ok');
 
 function showMessage(text) {
     messageText.textContent = text;
-    messageModal.style.display = 'block';
+    messageModal.classList.add('is-open');
+    messageModal.setAttribute('aria-hidden', 'false');
 }
 
 messageClose.onclick = function() {
-    messageModal.style.display = 'none';
+    messageModal.classList.remove('is-open');
+    messageModal.setAttribute('aria-hidden', 'true');
     location.reload();
 };
 
 messageOk.onclick = function() {
-    messageModal.style.display = 'none';
+    messageModal.classList.remove('is-open');
+    messageModal.setAttribute('aria-hidden', 'true');
     location.reload();
 };
 
 window.onclick = function(event) {
     if (event.target == messageModal) {
-        messageModal.style.display = 'none';
+        messageModal.classList.remove('is-open');
+        messageModal.setAttribute('aria-hidden', 'true');
         location.reload();
     }
 };
 
-// Klávesy
+// Controls
 const keys = {};
 document.addEventListener('keydown', (e) => {
     keys[e.code] = true;
-    e.preventDefault(); // Zabránit scrollování
+    if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Space', 'ControlLeft'].includes(e.code)) {
+        e.preventDefault();
+    }
 });
 document.addEventListener('keyup', (e) => keys[e.code] = false);
 
-// Esc pro zavření modalu
+window.addEventListener('resize', resizeCanvas);
+window.addEventListener('storage', (event) => {
+    if (event.key === 'theme') {
+        syncTheme();
+    }
+});
+
+// Escape closes the wrapper
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
         window.parent.postMessage({ action: 'closeModal' }, '*');
@@ -505,13 +528,13 @@ for (let i = 0; i < 15; i++) {
 
 let startTime = Date.now();
 let lastSpawn = Date.now();
-let spawnInterval = 1500;
-const baseSpeed = 3;
+let spawnInterval = 1250;
+const baseSpeed = 3.6;
 
 let gameState = 'level_select';
 let difficulty = null;
-const sunScoreThreshold = { easy: 20, medium: 40, hard: 60 };
-const spawnIntervals = { easy: 2000, medium: 1500, hard: 1000 };
+const sunScoreThreshold = { easy: 25, medium: 48, hard: 72 };
+const spawnIntervals = { easy: 1700, medium: 1250, hard: 900 };
 let sunActive = false;
 let sunX = BASE_WIDTH / 2;
 let sunY = -1000;
@@ -533,7 +556,7 @@ let flashIntensity = 0;
 const font = '36px Arial';
 const bigFont = '72px Arial';
 
-// Funkce pro update
+// Update loop
 function update() {
     if (!gameRunning) return;
 
@@ -558,13 +581,13 @@ function update() {
         const score = Math.floor(elapsed / 3);
         const speed = (baseSpeed + elapsed * 0.1) * rocket.velocity;
 
-        if (Math.floor(score / 10) !== lastShieldScore && score > 0 && !shieldActive) {
+        if (Math.floor(score / SHIELD_INTERVAL) !== lastShieldScore && score > 0 && !shieldActive) {
             shieldAvailable = true;
-            lastShieldScore = Math.floor(score / 10);
+            lastShieldScore = Math.floor(score / SHIELD_INTERVAL);
         }
 
         if (shieldActive) {
-            if ((Date.now() - shieldStartTime) / 1000 >= 10) {
+            if ((Date.now() - shieldStartTime) / 1000 >= SHIELD_DURATION) {
                 shieldActive = false;
             }
         }
@@ -628,7 +651,7 @@ function update() {
     }
 }
 
-// Funkce pro draw
+// Draw loop
 function draw() {
     if (!gameRunning) return;
 
@@ -655,7 +678,7 @@ function draw() {
         ctx.fillStyle = '#0a0a1e';
         ctx.fillRect(0, 0, BASE_WIDTH, BASE_HEIGHT);
 
-        // Hvězdy
+        // Star field
         for (let i = 0; i < 100; i++) {
             const x = Math.random() * BASE_WIDTH;
             const y = Math.random() * BASE_HEIGHT;
@@ -668,17 +691,17 @@ function draw() {
         ctx.fillStyle = '#ffffff';
         ctx.font = bigFont;
         ctx.textAlign = 'center';
-        ctx.fillText('Vyber úroveň', BASE_WIDTH / 2, BASE_HEIGHT / 2 - 100);
+        ctx.fillText('Choose a mission difficulty', BASE_WIDTH / 2, BASE_HEIGHT / 2 - 100);
 
         ctx.font = font;
         ctx.fillStyle = '#64ff64';
-        ctx.fillText('Q - Easy (Slunce při 20)', BASE_WIDTH / 2, BASE_HEIGHT / 2);
+        ctx.fillText('Q - Easy (solar burn at 25)', BASE_WIDTH / 2, BASE_HEIGHT / 2);
 
         ctx.fillStyle = '#ffff64';
-        ctx.fillText('W - Medium (Slunce při 40)', BASE_WIDTH / 2, BASE_HEIGHT / 2 + 50);
+        ctx.fillText('W - Medium (solar burn at 48)', BASE_WIDTH / 2, BASE_HEIGHT / 2 + 50);
 
         ctx.fillStyle = '#ff6464';
-        ctx.fillText('E - Hard (Slunce při 60)', BASE_WIDTH / 2, BASE_HEIGHT / 2 + 100);
+        ctx.fillText('E - Hard (solar burn at 72)', BASE_WIDTH / 2, BASE_HEIGHT / 2 + 100);
     }
 
     if (gameState === 'takeoff') {
@@ -778,11 +801,11 @@ function draw() {
                 ctx.beginPath();
                 ctx.arc(rocket.x, rocket.y, 50, 0, Math.PI * 2);
                 ctx.stroke();
-                const remaining = 10 - (Date.now() - shieldStartTime) / 1000;
+                const remaining = SHIELD_DURATION - (Date.now() - shieldStartTime) / 1000;
                 ctx.fillStyle = '#64c8ff';
                 ctx.font = font;
                 ctx.textAlign = 'left';
-                ctx.fillText(`Štít: ${remaining.toFixed(1)}s`, 10, 90);
+                ctx.fillText(`Shield: ${Math.max(0, remaining).toFixed(1)}s`, 10, 90);
             }
         } else {
             particles.forEach(p => p.draw());
@@ -795,21 +818,21 @@ function draw() {
         ctx.fillStyle = '#ffffff';
         ctx.font = font;
         ctx.textAlign = 'left';
-        ctx.fillText(`Skóre: ${score}`, 10, 10);
+        ctx.fillText(`Score: ${score}`, 10, 10);
 
         if (!gameOver) {
             ctx.fillStyle = '#ffff64';
-            ctx.fillText(`Rychlost: ${rocket.velocity.toFixed(1)}x`, 10, 50);
+            ctx.fillText(`Velocity: ${rocket.velocity.toFixed(1)}x`, 10, 50);
 
             if (shieldAvailable) {
                 ctx.fillStyle = '#64ff64';
                 ctx.font = bigFont;
                 ctx.textAlign = 'center';
-                ctx.fillText('ŠTÍT DOSTUPNÝ!', BASE_WIDTH / 2, BASE_HEIGHT / 3);
+                ctx.fillText('SHIELD READY', BASE_WIDTH / 2, BASE_HEIGHT / 3);
 
                 ctx.fillStyle = '#ffffff';
                 ctx.font = font;
-                ctx.fillText('Zmáčkni Ctrl pro aktivaci', BASE_WIDTH / 2, BASE_HEIGHT / 3 + 60);
+                ctx.fillText('Press Ctrl to activate it', BASE_WIDTH / 2, BASE_HEIGHT / 3 + 60);
             }
         }
     }
@@ -828,24 +851,24 @@ function draw() {
             ctx.fillStyle = '#ff0000';
             ctx.font = bigFont;
             ctx.textAlign = 'center';
-            ctx.fillText('FAIL! Nabourals!', BASE_WIDTH / 2, BASE_HEIGHT / 2);
+            ctx.fillText('Mission failed', BASE_WIDTH / 2, BASE_HEIGHT / 2);
 
             const elapsed = (Date.now() - startTime) / 1000;
             const score = Math.floor(elapsed / 3);
             ctx.fillStyle = '#ffffff';
             ctx.font = font;
-            ctx.fillText(`Tvoje skóre: ${score}`, BASE_WIDTH / 2, BASE_HEIGHT / 2 + 60);
+            ctx.fillText(`Your score: ${score}`, BASE_WIDTH / 2, BASE_HEIGHT / 2 + 60);
         }
 
         if (timeSinceCrash > 5) {
             ctx.fillStyle = '#ffff00';
             ctx.font = font;
-            ctx.fillText('Zmáčkni Mezerník pro restart', BASE_WIDTH / 2, BASE_HEIGHT / 2 + 120);
+            ctx.fillText('Press Space to restart', BASE_WIDTH / 2, BASE_HEIGHT / 2 + 120);
         }
     }
 }
 
-// Event listenery pro game states
+// State listeners
 document.addEventListener('keydown', (e) => {
     if (gameState === 'level_select') {
         if (e.code === 'KeyQ') {
@@ -880,7 +903,7 @@ document.addEventListener('keydown', (e) => {
         flashIntensity = 0;
         gameState = 'level_select';
         startTime = Date.now();
-        spawnInterval = 1500;
+        spawnInterval = 1250;
     }
 
     if (e.code === 'ControlLeft' && shieldAvailable && !shieldActive && gameState === 'playing') {

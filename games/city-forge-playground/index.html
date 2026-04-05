@@ -6,26 +6,16 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>Racing</title>
+    <title>City Forge</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=1">
+    <link rel="stylesheet" href="../playground-shell.css">
 </head>
 <body>
-    <script>
-        (function () {
-            var t = localStorage.getItem('theme') || 'light';
-            if (t === 'dark') document.body.classList.add('dark');
-            window.GAME_LICENSE_TITLE = 'Racing';
-            window.GAME_LICENSE_HOME_PATH = '../index.html#buy-games';
-            window.GAME_LICENSE_BUY_PATH = '../index.html#buy-games';
-            window.GAME_GATE_CONTAINER_SELECTOR = '#game-container';
-        })();
-    </script>
     <header>
-        <a href="../" class="header-btn home-link" id="home-link" title="Playground">&#8592; Playground</a>
-        <h1 id="header-title">Racing</h1>
+        <a href="../" class="header-btn home-link" title="Playground">&#8592; Playground</a>
+        <h1 id="header-title">City Forge</h1>
         <div class="header-right">
             <button class="header-btn" id="btn-reset" title="Restart">&#8634;</button>
             <div class="lang-pill" id="lang-pill">
@@ -45,15 +35,23 @@
         </div>
     </header>
 
-    <div id="game-container"></div>
+    <div class="app-stage">
+        <iframe id="app-frame" class="app-frame" title="City Forge" loading="eager"></iframe>
+    </div>
 
-    <script src="../playground-config.js"></script>
-    <script src="../games/license-gate.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="data.js?v=1"></script>
-    <script src="track.js?v=1"></script>
-    <script src="car.js?v=1"></script>
-    <script src="ai.js?v=1"></script>
-    <script src="game.js?v=1"></script>
+    <script>
+        window.GAME_INFO = {
+            title: { en: 'City Forge', cz: 'City Forge' },
+            path: '../city-forge/index.html',
+            requiresLicense: true
+        };
+        window.GAME_LICENSE_TITLE = 'City Forge';
+        window.GAME_LICENSE_HOME_PATH = '../../index.html#buy-games';
+        window.GAME_LICENSE_BUY_PATH = '../../index.html#buy-games';
+        window.GAME_GATE_CONTAINER_SELECTOR = '.app-stage';
+    </script>
+    <script src="../../playground-config.js"></script>
+    <script src="../playground-shell.js"></script>
+    <script src="../license-gate.js"></script>
 </body>
 </html>

@@ -28,7 +28,7 @@ var DATA = {
     },
 
     config: {
-        totalLaps: 3,
+        totalLaps: 4,
         aiCount: 4,
         countdownDuration: 3,
 
@@ -41,10 +41,10 @@ var DATA = {
         offTrackPenalty: 0.96,
         reverseMax: 0.5,
 
-        aiSpeedEasy: 0.90,
-        aiSpeedMedium: 0.97,
-        aiSpeedHard: 1.00,
-        aiWander: 0.08,
+        aiSpeedEasy: 0.96,
+        aiSpeedMedium: 1.02,
+        aiSpeedHard: 1.08,
+        aiWander: 0.06,
 
         cameraHeight: 75,
         cameraLookAhead: 12,

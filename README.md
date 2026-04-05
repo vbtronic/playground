@@ -1,42 +1,38 @@
 # Playground
 
-A collection of small web-based apps built with plain HTML and JavaScript.
+A collection of small web apps and browser games built with plain HTML and modern JavaScript.
 
-**Live site:** https://vbtronic.github.io/playground/
+Live site: https://vbtronic.github.io/playground/
 
 ## Structure
 
-Each web app lives in its own subfolder with an `index.html` entry point:
+Each app lives in its own subfolder with an `index.html` entry point:
 
-```
+```text
 playground/
-  index.html          ← landing page with links to all apps
-  app-name/
-    index.html
-    ...
+  index.html
+  political-calculator/
+  racing/
+  games/
 ```
 
-## Tech stack
+## Tech Stack
 
-- Plain HTML and modern JavaScript (no frameworks)
-- Deployed via GitHub Pages with a GitHub Actions workflow
+- Plain HTML and modern JavaScript
+- No framework
+- No build step
+- Static deployment
 
-## Adding a new app
+## Local Testing
 
-1. Create a subfolder (e.g. `my-app/`) with an `index.html`.
-2. Add a link to it in the root `index.html`.
-3. Test locally before pushing (see below).
-
-## Local testing
-
-Serve the repo root with any static file server:
+Serve the repo root with a static file server:
 
 ```sh
-# Python
-python -m http.server 8000
-
-# Node.js (npx)
-npx serve .
+python3 -m http.server 8000
 ```
 
-Open `http://localhost:8000/` and verify your app loads without console errors and all relative paths resolve correctly.
+Open `http://localhost:8000/` and verify the landing page plus every linked app.
+
+## Production Notes
+
+Deployment, custom-domain, private-repo, and payment-gateway guidance now lives in [DEPLOYMENT.md](DEPLOYMENT.md).

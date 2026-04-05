@@ -1,27 +1,46 @@
 <!DOCTYPE html>
-<html lang="cs" style="overflow: hidden;">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vesmírná mise</title>
+    <title>Space Mission</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
-<body style="overflow: hidden;">
-    <div id="game">
-        <canvas id="canvas" width="600" height="400"></canvas>
-        <div id="instructions">
-            <p>Ovládání: Šipečky vlevo/vpravo pro pohyb, Šipečky nahoru/dolů pro rychlost, Ctrl pro štít</p>
+<body>
+    <div id="game" class="mission-shell">
+        <section class="hud-row">
+            <article class="hud-card">
+                <span>Objective</span>
+                <strong>Survive the mission window</strong>
+            </article>
+            <article class="hud-card">
+                <span>Controls</span>
+                <strong>Arrows · Ctrl shield</strong>
+            </article>
+            <article class="hud-card">
+                <span>Difficulty</span>
+                <strong>Q / W / E to launch</strong>
+            </article>
+        </section>
+
+        <div class="canvas-shell">
+            <canvas id="canvas" width="800" height="600"></canvas>
+        </div>
+
+        <p id="instructions">Steer with Left / Right, adjust thrust with Up / Down, and save the shield for the last possible moment. This version ramps up faster than the original.</p>
+    </div>
+
+    <div id="message-modal" class="message-modal" aria-hidden="true">
+        <div class="message-modal-content">
+            <button class="message-close" type="button" aria-label="Close">&times;</button>
+            <p id="message-text"></p>
+            <button id="message-ok" type="button">Restart mission</button>
         </div>
     </div>
 
-    <!-- Message Modal -->
-    <div id="message-modal" class="message-modal">
-        <div class="message-modal-content">
-            <span class="message-close">&times;</span>
-            <p id="message-text"></p>
-            <button id="message-ok">OK</button>
-        </div>
-    </div>
     <script src="script.js"></script>
 </body>
 </html>
