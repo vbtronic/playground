@@ -24,7 +24,7 @@ var AI = (function () {
     AIDriver.prototype.update = function (dt) {
         var car = this.car;
         if (car.finished) {
-            car.input = { accelerate: false, brake: false, steerLeft: false, steerRight: false };
+            car.input = { accelerate: false, brake: false, steer: 0 };
             return;
         }
 
@@ -58,10 +58,8 @@ var AI = (function () {
         while (angleDiff > Math.PI) angleDiff -= 2 * Math.PI;
         while (angleDiff < -Math.PI) angleDiff += 2 * Math.PI;
 
-        // Steer
-        var steerThreshold = 0.05;
-        car.input.steerLeft = angleDiff > steerThreshold;
-        car.input.steerRight = angleDiff < -steerThreshold;
+        // Proportional steering, saturating at ~0.2 rad of heading error
+        car.input.steer = Math.max(-1, Math.min(1, angleDiff * 5));
 
         // Speed control - brake only for very sharp curves
         var aheadT = (currentT + this.lookAhead * 2) % 1;

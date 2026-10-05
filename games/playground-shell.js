@@ -84,7 +84,7 @@
     });
 
     window.addEventListener('keydown', function (event) {
-        if (event.key === 'Escape') {
+        if (event.key === 'Escape' && !document.querySelector('.help-modal.is-open')) {
             window.location.href = homePath;
         }
     });

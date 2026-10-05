@@ -3,15 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
     <title>Space Invaders</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../playground-shell.css">
-    <link rel="stylesheet" href="../../shared/menu.css">
+    <link rel="stylesheet" href="../../shared/help.css">
 </head>
 <body>
     <header>
@@ -25,20 +22,23 @@
     </header>
     <div class="app-stage"><iframe id="app-frame" class="app-frame" title="Space Invaders" loading="eager"></iframe></div>
     <script>
-        window.GAME_INFO = { title: { en: 'Space Invaders', cz: 'Space Invaders' }, path: '../space-invaders/index.html', requiresLicense: true };
-        window.GAME_LICENSE_TITLE = 'Space Invaders';
-        window.GAME_LICENSE_HOME_PATH = '../../buy-ticket/';
-        window.GAME_LICENSE_BUY_PATH = '../../buy-ticket/';
-        window.GAME_PREVIEW_PATH = '../../preview/space-invaders/';
+        window.GAME_INFO = { title: { en: 'Space Invaders', cz: 'Space Invaders' }, path: '../space-invaders/index.html' };
         window.GAME_HOME_PATH = '../../';
-        window.GAME_GATE_CONTAINER_SELECTOR = '.app-stage';
-        window.PLAYGROUND_MENU_ROOT = '../../';
-        window.PLAYGROUND_HELP = { title: 'Space Invaders help', subtitle: 'Defend the line and clear every wave.', sections: [ { heading: 'Goal', text: 'Survive three waves, protect your remaining lives, and clear the fleet before it reaches the ground.' }, { heading: 'Controls', items: ['Arrow Left / Right or A / D to move.', 'Space to fire.', 'Use restart in the header to relaunch instantly.'] }, { heading: 'Difficulty', text: 'Enemy fire and fleet pace scale up every wave.' } ] };
+        window.PLAYGROUND_HELP = {
+            title: { en: 'Space Invaders', cz: 'Space Invaders' },
+            subtitle: { en: 'Defend the line and clear every wave.', cz: 'Ubraňte linii a zničte každou vlnu.' },
+            sections: [
+                { heading: { en: 'Goal', cz: 'Cíl' }, text: { en: 'Survive three waves, protect your remaining lives, and clear the fleet before it reaches the ground.', cz: 'Přežijte tři vlny, chraňte zbývající životy a zničte flotilu dřív, než dosáhne země.' } },
+                { heading: { en: 'Controls', cz: 'Ovládání' }, items: [
+                    { en: 'Arrow Left / Right or A / D to move.', cz: 'Šipky vlevo / vpravo nebo A / D pro pohyb.' },
+                    { en: 'Space to fire.', cz: 'Mezerník pro střelbu.' },
+                    { en: 'Use restart in the header to relaunch instantly.', cz: 'Tlačítkem restart v hlavičce začnete znovu.' }
+                ] },
+                { heading: { en: 'Difficulty', cz: 'Obtížnost' }, text: { en: 'Enemy fire and fleet pace scale up every wave.', cz: 'Palba i rychlost flotily rostou s každou vlnou.' } }
+            ]
+        };
     </script>
-    <script src="../../playground-config.js"></script>
-    <script src="../../shared/account.js"></script>
-    <script src="../../shared/menu.js"></script>
     <script src="../playground-shell.js"></script>
-    <script src="../license-gate.js"></script>
+    <script src="../../shared/help.js"></script>
 </body>
 </html>

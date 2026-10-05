@@ -32,12 +32,8 @@ var Car = (function () {
         this.prevZ = this.z;
 
         // Input state
-        this.input = {
-            accelerate: false,
-            brake: false,
-            steerLeft: false,
-            steerRight: false
-        };
+        // steer: -1 (full right) .. 1 (full left)
+        this.input = { accelerate: false, brake: false, steer: 0 };
 
         this.onTrack = true;
         this.mesh = this._createMesh();
@@ -152,9 +148,7 @@ var Car = (function () {
 
         // Steering (only when moving)
         if (Math.abs(this.speed) > 0.01) {
-            var steer = 0;
-            if (inp.steerLeft) steer = 1;
-            if (inp.steerRight) steer = -1;
+            var steer = Math.max(-1, Math.min(1, inp.steer || 0));
 
             var speedFactor = Math.min(Math.abs(this.speed) / cfg.maxSpeed, 1);
             var turnAmount = steer * cfg.turnSpeed * (0.4 + 0.6 * speedFactor);
@@ -238,7 +232,7 @@ var Car = (function () {
         this.parkingIndex = undefined;
         this.prevX = x;
         this.prevZ = z;
-        this.input = { accelerate: false, brake: false, steerLeft: false, steerRight: false };
+        this.input = { accelerate: false, brake: false, steer: 0 };
         this._updateMesh();
     };
 
