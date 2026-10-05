@@ -1,6 +1,6 @@
 # Playground
 
-A collection of small browser games built with plain HTML and modern JavaScript.
+A collection of small web apps built with plain HTML and modern JavaScript.
 
 Live site: https://vbtronic.github.io/playground/
 
@@ -10,15 +10,9 @@ Each app lives in its own subfolder with an `index.html` entry point:
 
 ```text
 playground/
-  index.html                       landing page
-  racing/                          3D top-down racing (Three.js), keyboard + touch
-  games/
-    space-invaders-playground/     header shell around games/space-invaders/
-    vesmirna-mise-playground/      header shell around games/vesmirna-mise/
-    city-forge-playground/         header shell around games/city-forge/
-  shared/                          shared page styles, theme/lang script, help modal
+  index.html        landing page
+  shared/           shared page styles and theme/language script
   privacy-policy/
-  terms-of-service/
 ```
 
 ## Tech Stack
