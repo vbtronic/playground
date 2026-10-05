@@ -11,7 +11,8 @@ Each app lives in its own subfolder with an `index.html` entry point:
 ```text
 playground/
   index.html        landing page
-  shared/           shared page styles and theme/language script
+  racing/           3D top-down racing (Three.js), keyboard + touch
+  shared/           shared page styles, theme/language script, help modal
   privacy-policy/
 ```
 
